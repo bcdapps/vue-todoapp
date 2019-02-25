@@ -95,7 +95,7 @@
     computed: {
       selector: function() {
         if(!this.taskcolorhex) {
-          return 'Color';
+          return 'Select Color';
         }
         else {
           return '<span style="background: ' + this.taskcolorhex + '"></span> ' + this.taskcolorName;
@@ -134,7 +134,38 @@
         }
       },
       addTask(){
-
+        this.taskName = '';
+        this.taskcolorhex = '';
+        this.weektask = {
+          monday: {
+            status: '',
+            task: false,
+          },
+          tuesday: {
+            status: '',
+            task: false,
+          },
+          wednesday: {
+            status: '',
+            task: false,
+          },
+          thursday: {
+            status: '',
+            task: false,
+          },
+          friday: {
+            status: '',
+            task: false,
+          },
+          saturday: {
+            status: '',
+            task: false,
+          },
+          sunday: {
+            status: '',
+            task: false,
+          },
+        },;
       }
     }
   };
