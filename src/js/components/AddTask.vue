@@ -14,42 +14,29 @@
           <p class="input-lable-p">Name the task</p>
           <input type="text" v-model="taskName" placeholder="e.g. Study Spanish" />
         </div>
-        <div class="input-container2">
-          <p class="input-lable-p">Daily Task</p>
-          <div class="two-cols">
-            <div class="two-cols" v-bind:style="{justifyContent: 'space-between',alignItems: 'center', gridGap: '20px'}">
-              <input type="number" v-model="hours" placeholder="00" />
-              <p>Hours</p>
-            </div>
-            <div class="two-cols" v-bind:style="{justifyContent: 'space-between',alignItems: 'center', gridGap: '20px'}">
-              <input type="number" v-model="minutes" placeholder="00" />
-              <p>Minutes</p>
-            </div>
-
-          </div>
-
-        </div>
-
       </div>
       <div class="input-container">
         <p class="input-lable-p">Name the task</p>
         <div class="seven-columns">
-          <input type="text" v-model="tasks.monday" placeholder="Mon" />
-          <input type="text" v-model="tasks.tuesday" placeholder="Tue" />
-          <input type="text" v-model="tasks.wednesday" placeholder="Wed" />
-          <input type="text" v-model="tasks.thursday" placeholder="Thu" />
-          <input type="text" v-model="tasks.friday" placeholder="Fri" />
-          <input type="text" v-model="tasks.saturday" placeholder="Sat" />
-          <input type="text" v-model="tasks.sunday" placeholder="Sun" />
+          <div @click="handleclick('monday')">Mon</div>
+          <div @click="handleclick('tuesday')">Tue</div>
+          <div @click="handleclick('wednesday')">Wed</div>
+          <div @click="handleclick('thursday')">Thu</div>
+          <div @click="handleclick('friday')">Fri</div>
+          <div @click="handleclick('saturay')">Sat</div>
+          <div @click="handleclick('sunday')">Sun</div>
         </div>
       </div>
       <div class="input-container">
         <p class="input-lable-p">Task color</p>
-        <select v-model="taskColor">
-          <option class="option"><span></span> Pink</option>
-          <option class="option"><span></span> Blue</option>
-          <option class="option"><span></span> Red</option>
-        </select>
+        <div id="color-picker">
+          <div class="wrapper-dropdown">
+            <span @click="toggleDropdown()" v-html="selector"></span>
+            <ul class="dropdown" v-show="active">
+              <li v-for="color in colors" @click="setColor(color.hex, color.name)"><span :style="{background: color.hex}"></span> {{color.name}}</li>
+            </ul>
+          </div>
+        </div>
         <div class="two-cols" v-bind:style="{paddingTop: '20px'}">
           <button @click="saveTask" class="save-btn">Save Task</button>
           <div class="center">
@@ -62,31 +49,89 @@
 </template>
 
 <script>
+  import {tasks, colors} from '../TaskDB/db';
   export default {
     name: 'AddTask',
     data() {
       return {
+        active: false,
         taskName: '',
-        hours: '',
-        minutes: '',
-        taskColor: 'Pink',
-        tasks: {
-          monday: '',
-          tuesday: '',
-          wednesday: '',
-          thursday: '',
-          friday: '',
-          saturday: '',
-          sunday: '',
-        }
+        tasks: tasks,
+        colors: colors,
+        taskcolorhex: '',
+        taskcolorName: 'Pink',
+        weektask: {
+          monday: {
+            status: '',
+            task: false,
+          },
+          tuesday: {
+            status: '',
+            task: false,
+          },
+          wednesday: {
+            status: '',
+            task: false,
+          },
+          thursday: {
+            status: '',
+            task: false,
+          },
+          friday: {
+            status: '',
+            task: false,
+          },
+          saturday: {
+            status: '',
+            task: false,
+          },
+          sunday: {
+            status: '',
+            task: false,
+          },
+        },
       };
+    },
+    computed: {
+      selector: function() {
+        if(!this.taskcolorhex) {
+          return 'Color';
+        }
+        else {
+          return '<span style="background: ' + this.taskcolorhex + '"></span> ' + this.taskcolorName;
+        }
+      }
     },
     methods: {
       handleAddTask(){
         this.$emit('handleAddTask', false)
       },
+      setColor(hex, name){
+        this.taskcolorhex = hex;
+        this.taskcolorName = name;
+        this.active = false;
+      },
+      toggleDropdown() {
+        this.active = !this.active;
+      },
+      handleclick(weekday){
+        this.weektask[weekday].status = 'pending';
+        this.weektask[weekday].task = true;
+      },
       saveTask(){
-
+        var ID = Math.random().toString().substring(3,6);
+        console.log(this.weektask)
+        if(tasks.filter(task => task.id === ID).length === 0) {
+          if(this.taskName && this.taskcolorhex){
+            tasks.push({
+              id: ID,
+              color: this.taskcolorhex,
+              title: this.taskName,
+              percent: '',
+              weektasks: this.weektask
+            })
+          }
+        }
       },
       addTask(){
 

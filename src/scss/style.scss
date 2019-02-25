@@ -65,21 +65,17 @@ input,button,a,option,select{
 .gray {
   background: #E0E7F4;
 }
+
 .gray-p{
   color: #C8CCD2;
 }
 
-.gray-p:active {
+.blue{
+  background-color:#61A1F5 ;
 }
 
 .blue-p{
-  -webkit-transition: all 1s ease-in-out;
-  -moz-transition: all 1s ease-in-out;
-  -o-transition: all 1s ease-in-out;
-  -ms-transition: all 1s ease-in-out;
   color: #DBEBFD;
-  background-color:#61A1F5 ;
-  border-radius: 33px;
 }
 
 @-webkit-keyframes slide {
@@ -108,7 +104,7 @@ input,button,a,option,select{
 }
 .addTask {
   color: #71ABF7;
-  font-weight: bold;
+  font-weight: 900;
   font-size: 16px;
   cursor: pointer;
 
@@ -165,6 +161,69 @@ input,button,a,option,select{
       // font-size:
 
     }
+    #color-picker {
+      box-sizing: border-box;
+      .wrapper-dropdown {
+        position: relative;
+        width: 200px;
+        background: #FFF;
+        color: #2e2e2e;
+        outline: none;
+        cursor: pointer;
+        span {
+          //width: 100%;
+          display: flex;
+          border: 1px solid #ababab;
+          padding: 5px;
+          span {
+            padding: 0 12px;
+            margin-right: 5px;
+          }
+        }&:after {
+          content: "";
+          width: 0;
+          height: 0;
+          position: absolute;
+          right: 16px;
+          top: calc(50% + 4px);
+          margin-top: -6px;
+          border-width: 6px 6px 0 6px;
+          border-style: solid;
+          border-color: #2e2e2e transparent;
+        }
+        .dropdown {
+          position: absolute;
+          z-index: 10;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: #fff;
+          font-weight: normal;
+          list-style-type: none;
+          padding-left: 0;
+          margin: 0;
+          border: 1px solid #ababab;
+          border-top: 0;
+          overflow-y: scroll;
+          height: 190px;
+          li {
+            display: flex;
+            text-decoration: none;
+            color: #2e2e2e;
+            padding: 5px;
+            cursor: pointer;
+            span {
+              padding: 0 12px;
+              margin-right: 5px;
+            }
+          }:hover {
+            background: #eee;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+
     & > input{
       padding: 10px;
       border-radius: 3px;
@@ -266,7 +325,7 @@ input,button,a,option,select{
           position: relative;
           z-index: 2;
           font-size: 14px;
-          padding: 11px 0px;
+          padding: 10px 0px;
           width: 114px;
           text-align: center;
           border-radius: 33px;
@@ -280,9 +339,9 @@ input,button,a,option,select{
           background: #61A1F5;
           position: absolute;
           top: 0;
-          left: 0;
+          left: 0%;
           width: 111px;
-          height: 38px;
+          height: 39px;
           z-index: 1;
         }
 
@@ -320,41 +379,71 @@ input,button,a,option,select{
         font-size: 14px;
         text-align: center;
 
-        .hidden-square-gray4 {
-          width: 30px;
-          -webkit-animation: slide 0.5s forwards;
-          -webkit-animation-delay: 2s;
-          animation: slide 0.5s forwards;
-          animation-delay: 2s;
+
+
+
+      }
+      .hidden-square-gray4 {
+        width: 30px;
+        -webkit-animation: slide 0.5s forwards;
+        -webkit-animation-delay: 2s;
+        animation: slide 0.5s forwards;
+        animation-delay: 2s;
+      }
+
+      .spot-container {
+        display: flex;
+        align-items: center;
+
+
+      }
+
+      .square {
+        width: 17px;
+        height: 17px;
+        border-radius: 3px;
+        display: block;
+        margin: 0 6px;
+        cursor: pointer;
+        transition: all 0.5s;
+
+      }
+
+      .spot {
+        width: 12px;
+        height: 12px;
+        border-radius: 20px;
+        display: block;
+        margin-right: 10px;
+        cursor: pointer;
+      }
+      .chart-row{
+        .hidden-square-gray{
+          width: 100%;
+          .hidden-square-orange{
+            margin-left: 0px;
+          }
         }
-
-        .spot-container {
-          display: flex;
-          align-items: center;
+      }
 
 
+
+
+      .calender-row2{
+        display: grid;
+        grid-template-columns:153px auto;
+        color: #C8CCD2;
+        font-size: 14px;
+        text-align: center;
+        padding: 10px;
+        align-items: center;
+        .squares-row{
+          display: grid;
+        grid-template-columns:20px 20px 20px 20px 20px 20px 20px;
+        justify-content: space-between;
+        color: #C8CCD2;
+        text-align: inherit;
         }
-
-        .square {
-          width: 17px;
-          height: 17px;
-          border-radius: 3px;
-          display: block;
-          margin: 0 6px;
-          cursor: pointer;
-
-        }
-
-        .spot {
-          width: 12px;
-          height: 12px;
-          border-radius: 20px;
-          display: block;
-          margin-right: 10px;
-          cursor: pointer;
-        }
-
-
       }
     }
   }
@@ -473,4 +562,36 @@ input,button,a,option,select{
 
 
 
+}
+
+.month{
+  animation: foo 0.25s linear;
+  animation-fill-mode: forwards;
+  @keyframes foo{
+    to{
+      left: 24.99%;
+    }
+  }
+}
+
+.week{
+animation: foo2 0.25s linear;
+animation-fill-mode: forwards;
+@keyframes foo2{
+  to{
+    left: 0%;
+  }
+}
+}
+
+
+
+
+
+///////@at-root
+.fade-leave-active {
+  transition: margin-left .15s;
+}
+.fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  margin-left: 300px;
 }

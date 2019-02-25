@@ -1,25 +1,36 @@
 <template>
   <div>
-    <add-task  v-if="modalOpen" @handleAddTask="handleAddTask"/>
+    <add-task v-if="modalOpen" @handleAddTask="handleAddTask"/>
     <section class="main-container">
       <div class="left-container">
         <header>
-          <div class="time-container">
-            <div @click="handleyearTab('week')" id="week" :class="yearClass === 'week'? 'blue-p':'gray-p'">Week</div>
-            <div @click="handleyearTab('month')" id="month" :class="yearClass === 'month'? 'blue-p':'gray-p'">Month</div>
-            <div @click="handleyearTab('year')" id="year" :class="yearClass === 'year'? 'blue-p':'gray-p'">Year</div>
-            <div @click="handleyearTab('allTime')" id="allTime" :class="yearClass === 'allTime'? 'blue-p':'gray-p'">All Time</div>
+          <div class="time-container ">
+            <div  id="week" :class="yearClass === 'week'? 'blue-p':'gray-p'"  @click="Week">Week</div>
+            <div id="month" :class="yearClass === 'month'? 'blue-p':'gray-p'" @click="Month">Month</div>
+            <div  id="year" :class="yearClass === 'year'? 'blue-p':'gray-p'">Year</div>
+            <div id="allTime" :class="yearClass === 'allTime'? 'blue-p':'gray-p'">All Time</div>
+            <span class="absolute-span" id="absolute" v-bind:class="{month:this.month,week:this.week}"></span>
           </div>
           <div @click="handleAddTask(true)">
             <p class="addTask" id="task-btn"><span> + </span> Add Task</p>
           </div>
         </header>
         <div class="second-row">
-          <p class="big-para">Mon, Feb 4 - Sun, Feb 10</p>
-          <p class="bold-small-p">56% of weekly goal</p>
+          <p v-if="yearClass === 'week'" class="big-para">
+            {{getMonday()}} - {{getSunday()}}
+          </p>
+          <p v-if="yearClass === 'month'" class="big-para">
+            {{getMonth()}}
+          </p>
+          <p v-if="yearClass === 'year'" class="big-para">
+            {{new Date().getFullYear()}}
+          </p>
+          <p v-if="yearClass === 'allTime'" class="bold-small-p">{{goals[this.yearClass]}} of all time goal</p>
+          <p v-else class="bold-small-p">{{goals[this.yearClass]}} of {{this.yearClass}}ly goal</p>
           <div @click="handleAlign('left')"><i class="fa fa-align-left" id="left-align" :style="{opacity: setopacity_left}"></i></div>
           <div @click="handleAlign('block')"><i class="fa fa-th" id="fa-th" :style="{opacity: setopacity_block}"></i></div>
         </div>
+
         <div class="calender-container">
           <div class="calender-row" id="calender-header" :style="{opacity: setopacity_block === 0.25? '0':'1'}">
             <div></div>
@@ -31,76 +42,19 @@
             <div>Sat</div>
             <div>Sun</div>
           </div>
-          <div class="calender-row">
-            <div class="spot-container"><span class="spot orange"></span>
-              <p>Read</p>
+          <div class="calender-row2" v-for="task in tasks">
+            <div class="spot-container"><span class="spot" v-bind:style="{background: task.color}"></span>
+              <p>{{task.title}}</p>
             </div>
-            <div v-if="alignMode === 'left'">
-              <div class="gray square" id="hidden-square-gray"></div>
-              <div class="orange square" id="hidden-square-orange"></div>
+            <div v-if="alignMode === 'left'" class="chart-row">
+              <div class="gray square hidden-square-gray">
+                <div class="square hidden-square-orange" v-bind:style="{background: task.color, width: task.percent}"></div>
+              </div>
             </div>
-            <div v-else>
-              <div class="gray square"></div>
-              <div class="orange square"></div>
-              <div class="orange square"></div>
-              <div class="orange square"></div>
-              <div class="orange square"></div>
-              <div class=" square"></div>
-              <div class="orange square"></div>
-            </div>
-          </div>
-          <div class="calender-row">
-            <div class="spot-container"><span class="spot purple"></span>
-              <p>Workout</p>
-            </div>
-            <div v-if="alignMode === 'left'">
-              <div class="gray square" id="hidden-square-gray2"></div>
-              <div class="purple square" id="hidden-square-orange2"></div>
-            </div>
-            <div v-else>
-              <div class="purple square"></div>
-              <div class="purple square"></div>
-              <div class="gray square"></div>
-              <div class="gray square"></div>
-              <div class="purple square"></div>
-              <div class="purple square"></div>
-              <div class=" square"></div>
-            </div>
-          </div>
-          <div class="calender-row">
-            <div class="spot-container"><span class="spot sky"></span>
-              <p>Meditate</p>
-            </div>
-            <div v-if="alignMode === 'left'">
-              <div class="gray square" id="hidden-square-gray3"></div>
-              <div class="sky square" id="hidden-square-orange3"></div>
-            </div>
-            <div v-else>
-              <div class="sky square"></div>
-              <div class="sky square"></div>
-              <div class=" square"></div>
-              <div class="sky square"></div>
-              <div class="sky square"></div>
-              <div class=" square"></div>
-              <div class="sky square"></div>
-            </div>
-          </div>
-          <div class="calender-row">
-            <div class="spot-container"><span class="spot pink"></span>
-              <p>Journal</p>
-            </div>
-            <div v-if="alignMode === 'left'">
-              <div class="gray square" id="hidden-square-gray4"></div>
-              <div class="pink square" id="hidden-square-orange4"></div>
-            </div>
-            <div v-else>
-              <div class="pink square"></div>
-              <div class="pink square"></div>
-              <div class="pink square"></div>
-              <div class=" square"></div>
-              <div class="pink square"></div>
-              <div class="pink square"></div>
-              <div class="gray square"></div>
+            <div v-else class="squares-row">
+              <div v-for="weektask in task.weektasks">
+                <div v-if="weektask.task" class="square" v-bind:style="{background: weektask.status === 'complete'? task.color: pendingColor}"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -121,93 +75,16 @@
               <!-- <div class="arrow-container center"> <i class="fa fa-angle-right gray "></i></div> -->
             </header>
             <div>
-              <div class="block orange-border">
+              <div v-for="task in tasks" v-if="task.weektasks[day].task" v-bind:style="{borderLeft: `2px solid ${task.color}`}" class="block mark-complete-block">
                 <div class="two-cols block-row1">
-                  <p class="big-para">Read</p>
-                  <p class="small-para">30m</p>
+                  <p class="big-para">{{task.title}}</p>
                 </div>
-                <div class="two-cols block-row1">
+                <div v-if="task.weektasks[day].status === 'complete'"  class="two-cols block-row1">
                   <p class="small-para"><span><img class="tick-img" src="../../assets/images/tick.png" />Complete</span></p>
-                  <p class="small-para red" v-bind:style="{color: '#ECC4CA',cursor: 'pointer'}">Undo</p>
+                  <p @click="handleUndo(task.id, day)"  class="small-para red" v-bind:style="{color: '#ECC4CA',cursor: 'pointer'}">Undo</p>
                 </div>
-              </div>
-              <div class="block purple-border mark-complete-block">
-                <div class="two-cols block-row1">
-                  <p class="big-para">Read</p>
-                  <p class="small-para">30m</p>
-                </div>
-                <div class="block-row1">
-                  <div class="mark-complete center"> Mark Complete </div>
-                </div>
-              </div>
-              <div class="block sky-border mark-complete-block">
-                <div class="two-cols block-row1">
-                  <p class="big-para">Read</p>
-                  <p class="small-para">30m</p>
-                </div>
-                <div class="block-row1">
-                  <div class="mark-complete center"> Mark Complete </div>
-                </div>
-              </div>
-              <div class="block pink-border mark-complete-block">
-                <div class="two-cols block-row1">
-                  <p class="big-para">Read</p>
-                  <p class="small-para">30m</p>
-                </div>
-                <div class="block-row1">
-                  <div class="mark-complete center"> Mark Complete </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- //// -->
-
-          <div class="right-container">
-            <header>
-              <!-- <div class="arrow-container center"> <i class="fa fa-angle-left gray "></i></div> -->
-              <div class="double-rows">
-                <p class="small-para ">Yesterday</p>
-                <p class="big-para">Wed, Tue 22</p>
-              </div>
-              <!-- <div class="arrow-container center"> <i class="fa fa-angle-right gray "></i></div> -->
-            </header>
-            <div>
-              <div class="block orange-border">
-                <div class="two-cols block-row1">
-                  <p class="big-para">Read</p>
-                  <p class="small-para">30m</p>
-                </div>
-                <div class="two-cols block-row1">
-                  <p class="small-para"><span><img class="tick-img" src="../../assets/images/tick.png" />Complete</span></p>
-                  <p class="small-para red" v-bind:style="{color:' #ECC4CA', cursor: 'pointer'}">Undo</p>
-                </div>
-              </div>
-              <div class="block purple-border mark-complete-block">
-                <div class="two-cols block-row1">
-                  <p class="big-para">Read</p>
-                  <p class="small-para">30m</p>
-                </div>
-                <div class="block-row1">
-                  <div class="mark-complete center"> Mark Complete </div>
-                </div>
-              </div>
-              <div class="block sky-border mark-complete-block">
-                <div class="two-cols block-row1">
-                  <p class="big-para">Read</p>
-                  <p class="small-para">30m</p>
-                </div>
-                <div class="block-row1">
-                  <div class="mark-complete center"> Mark Complete </div>
-                </div>
-              </div>
-              <div class="block pink-border mark-complete-block">
-                <div class="two-cols block-row1">
-                  <p class="big-para">Read</p>
-                  <p class="small-para">30m</p>
-                </div>
-                <div class="block-row1">
-                  <div class="mark-complete center"> Mark Complete </div>
+                <div v-else class="block-row1">
+                  <div @click="handleComplete(task.id, day)" class="mark-complete center"> Mark Complete </div>
                 </div>
               </div>
             </div>
@@ -216,27 +93,41 @@
       </div>
     </section>
   </div>
+
+
 </template>
 
 <script>
   import AddTask from './AddTask';
+  import {tasks, goals} from '../TaskDB/db';
 export default {
   name: 'hello',
   data() {
     return {
-      msg: 'Welcome to Your Vue.js App',
       modalOpen: false,
       yearClass: 'week',
       alignMode: 'block',
       setopacity_block: '1',
       setopacity_left: '0.25',
+      show: true,
+      month: false,
+      week: false,
+      tasks: tasks,
+      goals: goals,
+      pendingColor: '#E0E7F4',
+      dayIndex: 0,
+      day: 0,
     };
   },
   components:{
     'add-task': AddTask
   },
-  mounted() {
-    document.addEventListener('click', this.documentClick);
+  created() {
+    var d = new Date();
+    var n = d.getDay();
+    var weekday = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+    this.dayIndex = n;
+    this.day = weekday[n];
   },
   methods: {
     handleyearTab(tabName){
@@ -255,6 +146,44 @@ export default {
       }
       this.alignMode = mode;
     },
+    Month(){
+      this.yearClass = 'month';
+      this.month=true;
+       this.week=false;
+      console.log('jcjsj');
+    },
+    Week(){
+      this.yearClass = 'week';
+      this.month=false;
+      this.week=true;
+      console.log('week');
+    },
+    getMonday() {
+      let d = new Date();
+      var day = d.getDay(),
+        diff = d.getDate() - day + (day == 0 ? -6 : 1);
+      let date = new Date(d.setDate(diff));
+      return date.toDateString().substring(0, date.toDateString().length-4);
+    },
+    getSunday() {
+      let d = new Date();
+      var day = d.getDay(),
+        diff = d.getDate() - day;
+      let date = new Date(d.setDate(diff));
+      this.getMonth();
+      return date.toDateString().substring(0, date.toDateString().length-4);
+    },
+    getMonth(){
+      const date = new Date();  // 2009-11-10
+      const month = date.toLocaleString('en-us', { month: 'long' });
+      return month;
+    },
+    handleComplete(id, day) {
+      this.tasks = this.tasks[id][day].status = 'complete';
+    },
+    handleUndo(id, day){
+      this.tasks = this.tasks[id][day].status = 'pending';
+    }
   }
 
 };
