@@ -1,5 +1,13 @@
 <template>
   <div>
+    <div id="demo">
+  <button v-on:click="show = !show">
+    Toggle
+  </button>
+  <transition name="fade">
+    <p v-if="show">hello</p>
+  </transition>
+</div>
     <section v-if="modalOpen" class="modal-body" id="modal-body">
       <div class="modal" id="modal">
         <div class="right">
@@ -65,11 +73,12 @@
     <section class="main-container">
       <div class="left-container">
         <header>
-          <div class="time-container">
-            <div @click="handleyearTab('week')" id="week" :class="yearClass === 'week'? 'blue-p':'gray-p'">Week</div>
-            <div @click="handleyearTab('month')" id="month" :class="yearClass === 'month'? 'blue-p':'gray-p'">Month</div>
-            <div @click="handleyearTab('year')" id="year" :class="yearClass === 'year'? 'blue-p':'gray-p'">Year</div>
-            <div @click="handleyearTab('allTime')" id="allTime" :class="yearClass === 'allTime'? 'blue-p':'gray-p'">All Time</div>
+          <div class="time-container ">
+            <div  id="week blue-p"  @click="Week">Week</div>
+            <div id="month" :class="yearClass === 'month'? 'blue-p':'gray-p'" @click="Month">Month</div>
+            <div  id="year" :class="yearClass === 'year'? 'blue-p':'gray-p'">Year</div>
+            <div id="allTime" :class="yearClass === 'allTime'? 'blue-p':'gray-p'">All Time</div>
+            <span class="absolute-span" id="absolute" v-bind:class="{month:this.month,week:this.week}"></span>
           </div>
           <div @click="handleAddTask(true)">
             <p class="addTask" id="task-btn"><span> + </span> Add Task</p>
@@ -92,15 +101,17 @@
             <div>Sat</div>
             <div>Sun</div>
           </div>
-          <div class="calender-row">
+          <div class="calender-row2">
             <div class="spot-container"><span class="spot orange"></span>
               <p>Read</p>
             </div>
-            <div v-if="alignMode === 'left'">
-              <div class="gray square" id="hidden-square-gray"></div>
-              <div class="orange square" id="hidden-square-orange"></div>
+            <div v-if="alignMode === 'left'" class="chart-row">
+              <div class="gray square hidden-square-gray" >
+                <div class="orange square hidden-square-orange" style="width:45%"></div>
+              </div>
+              
             </div>
-            <div v-else>
+            <div v-else class="squares-row">
               <div class="gray square"></div>
               <div class="orange square"></div>
               <div class="orange square"></div>
@@ -110,15 +121,17 @@
               <div class="orange square"></div>
             </div>
           </div>
-          <div class="calender-row">
+          <div class="calender-row2">
             <div class="spot-container"><span class="spot purple"></span>
               <p>Workout</p>
             </div>
-            <div v-if="alignMode === 'left'">
-              <div class="gray square" id="hidden-square-gray2"></div>
-              <div class="purple square" id="hidden-square-orange2"></div>
+            <div v-if="alignMode === 'left'" class="chart-row">
+              <div class="gray square hidden-square-gray" >
+                <div class="purple square hidden-square-orange" style="width:15%"></div>
+              </div>
+              
             </div>
-            <div v-else>
+            <div v-else class="squares-row">
               <div class="purple square"></div>
               <div class="purple square"></div>
               <div class="gray square"></div>
@@ -128,15 +141,17 @@
               <div class=" square"></div>
             </div>
           </div>
-          <div class="calender-row">
+          <div class="calender-row2">
             <div class="spot-container"><span class="spot sky"></span>
               <p>Meditate</p>
             </div>
-            <div v-if="alignMode === 'left'">
-              <div class="gray square" id="hidden-square-gray3"></div>
-              <div class="sky square" id="hidden-square-orange3"></div>
+            <div v-if="alignMode === 'left'" class="chart-row">
+              <div class="gray square hidden-square-gray" >
+                <div class="sky square hidden-square-orange" style="width:69%"></div>
+              </div>
+              
             </div>
-            <div v-else>
+            <div v-else class="squares-row">
               <div class="sky square"></div>
               <div class="sky square"></div>
               <div class=" square"></div>
@@ -146,15 +161,17 @@
               <div class="sky square"></div>
             </div>
           </div>
-          <div class="calender-row">
+          <div class="calender-row2">
             <div class="spot-container"><span class="spot pink"></span>
               <p>Journal</p>
             </div>
-            <div v-if="alignMode === 'left'">
-              <div class="gray square" id="hidden-square-gray4"></div>
-              <div class="pink square" id="hidden-square-orange4"></div>
+            <div v-if="alignMode === 'left'" class="chart-row">
+              <div class="gray square hidden-square-gray" >
+                <div class="pink square hidden-square-orange" style="width:20%"></div>
+              </div>
+              
             </div>
-            <div v-else>
+            <div v-else class="squares-row">
               <div class="pink square"></div>
               <div class="pink square"></div>
               <div class="pink square"></div>
@@ -277,6 +294,8 @@
       </div>
     </section>
   </div>
+
+  
 </template>
 
 <script>
@@ -290,6 +309,9 @@ export default {
       alignMode: 'block',
       setopacity_block: '1',
       setopacity_left: '0.25',
+      show:true,
+      month:false,
+      week:false
     };
   },
   created(){
@@ -312,6 +334,17 @@ export default {
       }
       this.alignMode = mode;
     },
+    Month(){
+      this.month=true;
+       this.week=false;
+      console.log('jcjsj');
+    },
+    Week(){
+      this.month=false;
+      this.week=true;
+      console.log('week');
+    }
+
   }
 
 };
