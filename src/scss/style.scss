@@ -504,27 +504,48 @@ input,button,a,option,select{
 
 
 }
-
+$lessposition:0;
 .month{
   animation: foo 0.25s linear;
   animation-fill-mode: forwards;
   @keyframes foo{
+    from{
+      left: $lessposition;
+    }
     to{
       left: 24.99%;
+      $lessposition:24.99%;
     }
   }
 }
 
 .week{
 animation: foo2 0.25s linear;
-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
 @keyframes foo2{
+  from{
+    left: $lessposition;
+  }
   to{
     left: 0%;
+    $lessposition : 0%;
   }
 }
 }
 
+.year{
+  animation: foo3 0.25s linear;
+animation-fill-mode: forwards;
+@keyframes foo3{
+  from{
+    left: $lessposition;
+  }
+  to{
+    left: 50%;
+    $lessposition:50%;
+  }
+}
+}
 
 
 

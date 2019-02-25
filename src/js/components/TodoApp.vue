@@ -1,23 +1,19 @@
 <template>
   <div>
     <div id="demo">
-  <button v-on:click="show = !show">
-    Toggle
-  </button>
-  <transition name="fade">
-    <p v-if="show">hello</p>
-  </transition>
+ 
 </div>
     <add-task v-if="modalOpen" @handleAddTask="handleAddTask"/>
     <section class="main-container">
-      <div class="left-container">
+      <div class="left-container" >
         <header>
-          <div class="time-container ">
+          <div class="time-container">
             <div  id="week blue-p"  @click="Week">Week</div>
             <div id="month" :class="yearClass === 'month'? 'blue-p':'gray-p'" @click="Month">Month</div>
-            <div  id="year" :class="yearClass === 'year'? 'blue-p':'gray-p'">Year</div>
+            <div  id="year" :class="yearClass === 'year'? 'blue-p':'gray-p'" @click="Year">Year</div>
             <div id="allTime" :class="yearClass === 'allTime'? 'blue-p':'gray-p'">All Time</div>
-            <span class="absolute-span" id="absolute" v-bind:class="{month:this.month,week:this.week}"></span>
+            <span class="absolute-span" id="absolute" v-bind:class="{month:this.month,week:this.week,year:this.year}"></span>
+            <!-- <div v-for="(tab,index) in tabs" @click="tabsMethod(tab)">{{tab.val}}</div> -->
           </div>
           <div @click="handleAddTask(true)">
             <p class="addTask" id="task-btn"><span> + </span> Add Task</p>
@@ -227,9 +223,11 @@
                   <div class="mark-complete center"> Mark Complete </div>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
+
       </div>
     </section>
   </div>
@@ -238,9 +236,11 @@
 </template>
 
 <script>
+
   import AddTask from './AddTask';
 export default {
   name: 'hello',
+  // name: "my-component",
   data() {
     return {
       msg: 'Welcome to Your Vue.js App',
@@ -251,7 +251,26 @@ export default {
       setopacity_left: '0.25',
       show:true,
       month:false,
-      week:false
+      week:false,
+      year:false,
+      tabs:[
+      {
+        key:'week',
+        val:'week'
+      },
+       {
+        key:'month',
+        val:'month'
+      },
+       {
+        key:'year',
+        val:'year'
+      },
+       {
+        key:'all',
+        val:'All times'
+      },
+      ],
     };
   },
   components:{
@@ -286,10 +305,35 @@ export default {
       this.month=false;
       this.week=true;
       console.log('week');
+    },
+    Year(){
+      this.month=false;
+      this.week=false;
+      this.year=true;
+      console.log('year',this.year)
     }
+    // tabsMethod(value){
+    //   console.log(value)
+    // },
 
-  }
-
+  },
+  mounted() {
+    const targets = this.$el;
+    this
+      .$anime
+      .timeline()
+      .add({
+        targets,
+        translateX: 0,
+        easing: 'easeOutExpo',
+      })
+      .add({
+        targets,
+        translateX: 0,
+        easing: 'easeOutExpo',
+      });
+      /* ... etc ... */
+  },
 };
 </script>
 
