@@ -1,6 +1,6 @@
 <template>
   <div>
-    <add-task v-if="modalOpen" @handleAddTask="handleAddTask"/>
+    <add-task  v-if="modalOpen" @handleAddTask="handleAddTask"/>
     <section class="main-container">
       <div class="left-container">
         <header>
@@ -235,8 +235,8 @@ export default {
   components:{
     'add-task': AddTask
   },
-  created(){
-
+  mounted() {
+    document.addEventListener('click', this.documentClick);
   },
   methods: {
     handleyearTab(tabName){
@@ -277,7 +277,4 @@ li {
   margin: 0 10px;
 }
 
-a {
-  color: #42b983;
-}
 </style>
