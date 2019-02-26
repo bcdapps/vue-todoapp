@@ -1,5 +1,5 @@
 <template>
-  <div class="main-page"> 
+  <div class="main-page">
     <section class="modal-body"  v-if="modalOpen" id="modal-body">
     <div v-bind:class="{modal:true,'modal-anime':modalAnime}" id="modal" >
     <add-task v-bind:class="{'modal-anime':modalAnime}" @handleAddTask="handleAddTask"/>
@@ -16,16 +16,11 @@
       <div class="left-container">
         <header>
           <div class="time-container ">
-            <!-- <div  id="week" :class="yearClass === 'week'? 'blue-p':'gray-p'"  @click="Week">Week</div>
-            <div id="month" :class="yearClass === 'month'? 'blue-p':'gray-p'" @click="Month">Month</div>
-            <div  id="year" :class="yearClass === 'year'? 'blue-p':'gray-p'" @click="Year">Year</div>
-            <div id="allTime" :class="yearClass === 'allTime'? 'blue-p':'gray-p'" @click="all">All Time</div> -->
-             <div  id="week" @click="Week" v-bind:style="{'color':color1}">Week</div>
-            <div id="month" @click="Month" v-bind:style="{'color':color2}">Month</div>
-            <div  id="year" @click="Year" v-bind:style="{'color':color3}">Year</div>
-            <div id="allTime" @click="all" v-bind:style="{'color':color4}">All Time</div>
-            <span class="absolute-span" id="absolute" v-bind:style="{'left':t,'transition':'.5s'}" ></span>
-            <!-- <div v-for="(tab,index) in tabs" @click="tabsMethod(tab)">{{tab.val}}</div> -->
+            <div  id="week" :class="yearClass === 'week'? 'blue-p':'gray-p'"  @click="handleyearTab(0, 'week')">Week</div>
+            <div id="month" :class="yearClass === 'month'? 'blue-p':'gray-p'" @click="handleyearTab(1, 'month')">Month</div>
+            <div  id="year" :class="yearClass === 'year'? 'blue-p':'gray-p'" @click="handleyearTab(2, 'year')">Year</div>
+            <div id="allTime" :class="yearClass === 'allTime'? 'blue-p':'gray-p'" @click="handleyearTab(3, 'allTime')">All Time</div>
+            <span id="absolute" class="absolute-span" :style="{width: `${tabWidth}px`,transform: `translate3d(${tabIndex * tabWidth}px, 0, 0)`,transition: 'transform .5s'}"></span>
           </div>
           <div @click="handleAddTask(true)">
             <p class="addTask" id="task-btn"><span> + </span> Add Task</p>
@@ -40,6 +35,9 @@
           </p>
           <p v-if="yearClass === 'year'" class="big-para">
             {{new Date().getFullYear()}}
+          </p>
+          <p v-if="yearClass === 'allTime'" class="big-para">
+            24 Hours
           </p>
           <p v-if="yearClass === 'allTime'" class="bold-small-p">{{goals[this.yearClass]}} of all time goal</p>
           <p v-else class="bold-small-p">{{goals[this.yearClass]}} of {{this.yearClass}}ly goal</p>
@@ -61,7 +59,7 @@
             </div>
           </div>
           <div class="calender-row2" v-for="task in tasks">
-            <div class="spot-container"><span class="spot" v-bind:style="{background: task.color}"></span>
+            <div class="spot-container"><span class="spot" v-bind:style="{background: task.color}"><img class="task-cancel" src="../../assets/images/cancel.png" /></span>
               <p>{{task.title}}</p>
             </div>
             <div v-if="alignMode === 'left'" class="chart-row">
@@ -79,35 +77,55 @@
       </div>
       <div class="main-div-right-container">
         <div class="arrows-div" >
-          <div class="arrow-container center" id="arrow-left"> <i class="fa fa-angle-left gray "></i></div>
-          <div class="arrow-container center" id="arrow-right"> <i class="fa fa-angle-right gray "></i></div>
+          <div @click="handlePrevious" class="arrow-container center" id="arrow-left"> <i class="fa fa-angle-left gray "></i></div>
+          <div @click="handleNext" class="arrow-container center" id="arrow-right"> <i class="fa fa-angle-right gray "></i></div>
         </div>
         <div class="scroll-div" id="scrolling-div">
-          <div class="right-container">
+          <div class="right-container" v-for="(week, index) in weekday">
             <header>
-              <!-- <div class="arrow-container center"> <i class="fa fa-angle-left gray "></i></div> -->
               <div class="double-rows">
-                <p class="small-para ">Today</p>
-                <p class="big-para">Mon, Feb 18</p>
+                <p class="small-para ">Yesterday</p>
+                <p class="big-para">{{getYesterday()}}</p>
               </div>
-              <!-- <div class="arrow-container center"> <i class="fa fa-angle-right gray "></i></div> -->
             </header>
             <div>
-              <div v-for="task in tasks" v-if="task.weektasks[day].task" v-bind:style="{borderLeft: `2px solid ${task.color}`}" class="block mark-complete-block">
+              <div v-for="(task, index) in tasks" v-if="task.weektasks[week].task" v-bind:style="{borderLeft: `2px solid ${task.color}`}" class="block mark-complete-block">
                 <div class="two-cols block-row1">
                   <p class="big-para">{{task.title}}</p>
                 </div>
-                <div v-if="task.weektasks[day].status === 'complete'"  class="two-cols block-row1">
+                <div v-if="task.weektasks[week].status === 'complete'"  class="two-cols block-row1">
                   <p class="small-para"><span><img class="tick-img" src="../../assets/images/tick.png" />Complete</span></p>
-                  <p @click="handleUndo(task.id, day)"  class="small-para red" v-bind:style="{color: '#ECC4CA',cursor: 'pointer'}">Undo</p>
+                  <p @click="handleUndo(index, week)"  class="small-para red" v-bind:style="{color: '#ECC4CA',cursor: 'pointer'}">Undo</p>
                 </div>
                 <div v-else class="block-row1">
-                  <div @click="handleComplete(task.id, day)" class="mark-complete center"> Mark Complete </div>
+                  <div @click="handleComplete(index, week)" class="mark-complete center"> Mark Complete </div>
                 </div>
               </div>
 
             </div>
           </div>
+          <!--<div class="right-container" v-if="daySlide === 'next'">-->
+            <!--<header>-->
+              <!--<div class="double-rows">-->
+                <!--<p class="small-para ">Today</p>-->
+                <!--<p class="big-para">{{getToday()}}</p>-->
+              <!--</div>-->
+            <!--</header>-->
+            <!--<div>-->
+              <!--<div v-for="(task, index) in tasks" v-if="task.weektasks[day].task" v-bind:style="{borderLeft: `2px solid ${task.color}`}" class="block mark-complete-block">-->
+                <!--<div class="two-cols block-row1">-->
+                  <!--<p class="big-para">{{task.title}}</p>-->
+                <!--</div>-->
+                <!--<div v-if="task.weektasks[day].status === 'complete'"  class="two-cols block-row1">-->
+                  <!--<p class="small-para"><span><img class="tick-img" src="../../assets/images/tick.png" />Complete</span></p>-->
+                  <!--<p @click="handleUndo(index, day)"  class="small-para red" v-bind:style="{color: '#ECC4CA',cursor: 'pointer'}">Undo</p>-->
+                <!--</div>-->
+                <!--<div v-else class="block-row1">-->
+                  <!--<div @click="handleComplete(index, day)" class="mark-complete center"> Mark Complete </div>-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
         </div>
 
       </div>
@@ -160,24 +178,29 @@
       },
       ],
       show: true,
-      month: false,
-      week: false,
       tasks: tasks,
       goals: goals,
       pendingColor: '#E0E7F4',
       dayIndex: 0,
       day: 0,
+      yesday: 0,
+      tabIndex: 0,
+      tabWidth: 120,
+      daySlide: '',
+      weekday: [],
     };
   },
   components:{
     'add-task': AddTask
   },
   created() {
+    this.getMonth();
     var d = new Date();
     var n = d.getDay();
-    var weekday = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+    this.weekday = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
     this.dayIndex = n;
-    this.day = weekday[n];
+    this.daySlide = this.weekday[n];
+    this.yesday = this.weekday[n-1];
   },
   mounted() {
     const targets = this.$el;
@@ -200,12 +223,19 @@
     console.log("This is updated function", this.t)
   },
   methods: {
-    handleyearTab(tabName){
+    handleyearTab(index, tabName){
       this.yearClass = tabName;
+      this.tabIndex = index;
     },
     handleAddTask(action){
       this.modalOpen = action;
       this.modalAnime=true;
+    },
+    handlePrevious(){
+      this.daySlide = this.weekday[this.daySlide - 1];
+    },
+    handleNext(){
+      this.daySlide = this.weekday[this.daySlide + 1];
     },
     handleAlign(mode){
       if(mode === 'block'){
@@ -217,68 +247,6 @@
       }
       this.alignMode = mode;
     },
-    //  Week(){
-    //   this.t='0%';
-    //   this.color1:'#deebfb',
-    //   this.color2:'#C6CAD1',
-    //   this.color3:'#C6CAD1',
-    //   this.color4:'#C6CAD1',
-    // },
-    // Month(){
-    //   this.t='25%';
-    //   this.color1:'#C6CAD1',
-    //   this.color2:'#deebfb',
-    //   this.color3:'#C6CAD1',
-    //   this.color4:'#C6CAD1',
-    // },
-    // Year(){
-    //   this.t='50%'
-    //   this.color1:'#C6CAD1',
-    //   this.color2:'#C6CAD1',
-    //   this.color3:'#deebfb',
-    //   this.color4:'#C6CAD1',
-    // },
-    // all(){
-    //   this.t='75%'
-    //   this.color1:'#C6CAD1',
-    //   this.color2:'#C6CAD1',
-    //   this.color3:'#C6CAD1',
-    //   this.color4:'#deebfb',
-    // },
-    Week(){
-      this.t='0%';
-      this.color1='#deebfb'
-      this.color2='#C6CAD1'
-      this.color3='#C6CAD1'
-      this.color4='#C6CAD1'
-    },
-    Month(){
-      this.t='25%';
-      this.color1='#C6CAD1'
-      this.color2='#deebfb'
-      this.color3='#C6CAD1'
-      this.color4='#C6CAD1'
-    },
-    Year(){
-      this.t='50%'
-      this.color1='#C6CAD1'
-      this.color2='#C6CAD1'
-      this.color3='#deebfb'
-      this.color4='#C6CAD1'
-    },
-    all(){
-      this.t='75%'
-      this.color1='#C6CAD1'
-      this.color2='#C6CAD1'
-      this.color3='#C6CAD1'
-      this.color4='#deebfb'
-    },
-   
-    // tabsMethod(value){
-    //   console.log(value)
-    // },
-
-  
     getMonday() {
       let d = new Date();
       var day = d.getDay(),
@@ -289,27 +257,31 @@
     getSunday() {
       let d = new Date();
       var day = d.getDay(),
-        diff = d.getDate() - day;
+        diff = d.getDate() - day + (day == 0 ? -6 : 7);
       let date = new Date(d.setDate(diff));
-      this.getMonth();
       return date.toDateString().substring(0, date.toDateString().length-4);
     },
-    getMonth(){
+    getToday() {
+      let d = new Date();
+      return d.toDateString().substring(0, d.toDateString().length-4);
+    },
+    getMonth() {
       const date = new Date();  // 2009-11-10
-      const month = date.toLocaleString('en-us', { month: 'long' });
+      const month = date.toLocaleString('en-us', {month: 'long'});
       return month;
     },
+    getYesterday(){
+      let d = new Date();
+      d.setDate(d.getDate() - 1);
+      return d.toDateString().substring(0, d.toDateString().length-4);
+    },
     handleComplete(id, day) {
-      this.tasks = this.tasks[id][day].status = 'complete';
+      this.tasks[id].weektasks[day].status = 'complete';
     },
     handleUndo(id, day){
-      this.tasks = this.tasks[id][day].status = 'pending';
+      this.tasks[id].weektasks[day].status = 'pending';
     },
-     a(){
-      this.t  = '10%';
-      this.$forceUpdate()
-      console.log('hjgjhva',this.t);
-    },
+
   },
 };
 </script>
