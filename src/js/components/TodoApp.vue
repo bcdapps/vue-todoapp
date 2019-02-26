@@ -1,6 +1,10 @@
 <template>
   <div class="main-page"> 
-    <add-task v-if="modalOpen" @handleAddTask="handleAddTask"/>
+    <section class="modal-body"  v-if="modalOpen" id="modal-body">
+    <div v-bind:class="{modal:true,'modal-anime':modalAnime}" id="modal" >
+    <add-task v-bind:class="{'modal-anime':modalAnime}" @handleAddTask="handleAddTask"/>
+    </div>
+    </section>
     <div class="notification">
       <div>
         <h1 class="notification-h1">Notification</h1>
@@ -12,11 +16,15 @@
       <div class="left-container">
         <header>
           <div class="time-container ">
-            <div  id="week" :class="yearClass === 'week'? 'blue-p':'gray-p'"  @click="Week">Week</div>
+            <!-- <div  id="week" :class="yearClass === 'week'? 'blue-p':'gray-p'"  @click="Week">Week</div>
             <div id="month" :class="yearClass === 'month'? 'blue-p':'gray-p'" @click="Month">Month</div>
-            <div  id="year" :class="yearClass === 'year'? 'blue-p':'gray-p'" @click="a">Year</div>
-            <div id="allTime" :class="yearClass === 'allTime'? 'blue-p':'gray-p'">All Time</div>
-            <span  v-anime="{duration: 2000, loop: true }" class="absolute-span" id="absolute" v-bind:class="{month:this.month,week:this.week,year:this.year}" v-bind:style="t"></span>
+            <div  id="year" :class="yearClass === 'year'? 'blue-p':'gray-p'" @click="Year">Year</div>
+            <div id="allTime" :class="yearClass === 'allTime'? 'blue-p':'gray-p'" @click="all">All Time</div> -->
+             <div  id="week" @click="Week" v-bind:style="{'color':color1}">Week</div>
+            <div id="month" @click="Month" v-bind:style="{'color':color2}">Month</div>
+            <div  id="year" @click="Year" v-bind:style="{'color':color3}">Year</div>
+            <div id="allTime" @click="all" v-bind:style="{'color':color4}">All Time</div>
+            <span class="absolute-span" id="absolute" v-bind:style="{'left':t,'transition':'.5s'}" ></span>
             <!-- <div v-for="(tab,index) in tabs" @click="tabsMethod(tab)">{{tab.val}}</div> -->
           </div>
           <div @click="handleAddTask(true)">
@@ -125,8 +133,12 @@
       month:false,
       week:false,
       year:false,
-      color:'',
-      t: '40%',
+      color1:'#deebfb',
+      color2:'#C6CAD1',
+      color3:'#C6CAD1',
+      color4:'#C6CAD1',
+      t: '0%',
+      modalAnime:false,
       tabs:[
       {
         key:'week',
@@ -157,13 +169,6 @@
   },
   components:{
     'add-task': AddTask
-  },
-  computed: {
-    t: function() {
-      return {
-        left: "10% !important"
-      }
-    }
   },
   created() {
     var d = new Date();
@@ -198,6 +203,7 @@
     },
     handleAddTask(action){
       this.modalOpen = action;
+      this.modalAnime=true;
     },
     handleAlign(mode){
       if(mode === 'block'){
@@ -209,23 +215,61 @@
       }
       this.alignMode = mode;
     },
-    Month(){
-      this.yearClass = 'month';
-      this.month=true;
-       this.week=false;
-      console.log('jcjsj');
-    },
+    //  Week(){
+    //   this.t='0%';
+    //   this.color1:'#deebfb',
+    //   this.color2:'#C6CAD1',
+    //   this.color3:'#C6CAD1',
+    //   this.color4:'#C6CAD1',
+    // },
+    // Month(){
+    //   this.t='25%';
+    //   this.color1:'#C6CAD1',
+    //   this.color2:'#deebfb',
+    //   this.color3:'#C6CAD1',
+    //   this.color4:'#C6CAD1',
+    // },
+    // Year(){
+    //   this.t='50%'
+    //   this.color1:'#C6CAD1',
+    //   this.color2:'#C6CAD1',
+    //   this.color3:'#deebfb',
+    //   this.color4:'#C6CAD1',
+    // },
+    // all(){
+    //   this.t='75%'
+    //   this.color1:'#C6CAD1',
+    //   this.color2:'#C6CAD1',
+    //   this.color3:'#C6CAD1',
+    //   this.color4:'#deebfb',
+    // },
     Week(){
-      this.yearClass = 'week';
-      this.month=false;
-      this.week=true;
-      console.log('week');
+      this.t='0%';
+      this.color1='#deebfb'
+      this.color2='#C6CAD1'
+      this.color3='#C6CAD1'
+      this.color4='#C6CAD1'
+    },
+    Month(){
+      this.t='25%';
+      this.color1='#C6CAD1'
+      this.color2='#deebfb'
+      this.color3='#C6CAD1'
+      this.color4='#C6CAD1'
     },
     Year(){
-      this.month=false;
-      this.week=false;
-      this.year=true;
-      console.log('year',this.year)
+      this.t='50%'
+      this.color1='#C6CAD1'
+      this.color2='#C6CAD1'
+      this.color3='#deebfb'
+      this.color4='#C6CAD1'
+    },
+    all(){
+      this.t='75%'
+      this.color1='#C6CAD1'
+      this.color2='#C6CAD1'
+      this.color3='#C6CAD1'
+      this.color4='#deebfb'
     },
    
     // tabsMethod(value){

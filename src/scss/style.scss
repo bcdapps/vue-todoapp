@@ -35,6 +35,17 @@ input,button,a,option,select{
   justify-content: center;
   align-items: center;
 }
+.modal-anime{
+  animation: foo 0.45s linear;
+  @keyframes foo {
+    from{
+      right: -500px;
+    }
+    to{
+      right: 0;
+    }
+  }
+}
 .active-day{
   background: #61A1F5;
   color:white;
@@ -54,7 +65,7 @@ input,button,a,option,select{
   position: fixed;
   right: 20px;
   top: 20px;
-  z-index: 9999996;
+  z-index: 3;
   box-shadow: 1px 2px 10px -1px grey;
   border-radius: 4px;
   background: #fff;
@@ -347,7 +358,7 @@ input,button,a,option,select{
 
 
 .main-container {
-  max-width: 960px;
+ width: 960px;
   padding: 20px;
   display: grid;
   grid-template-columns: 67% 24.5%;
@@ -356,15 +367,14 @@ input,button,a,option,select{
   .left-container {
     &>header {
       display: grid;
-      grid-template-columns: 74% auto;
+      grid-template-columns: 80% auto;
       grid-gap: 5%;
       justify-content: space-between;
       align-items: center;
 
       .time-container {
         display: grid;
-        grid-template-columns: 24% 24% 24% 24%;
-        grid-gap: 1.2%;
+        grid-template-columns: repeat(4,25%);
         justify-items: center;
         background: #EEF0F2;
         border-radius: 33px;
@@ -376,9 +386,9 @@ input,button,a,option,select{
           z-index: 2;
           font-size: 14px;
           padding: 10px 0px;
-          width: 114px;
           text-align: center;
           border-radius: 33px;
+          width: 100%;
           &>hover {
             color: #DBEBFD;
           }
@@ -389,8 +399,8 @@ input,button,a,option,select{
           background: #61A1F5;
           position: absolute;
           top: 0;
-          left: 0%;
-          width: 111px;
+          left: 0;
+          width: 25%;
           height: 39px;
           z-index: 1;
         }
@@ -589,6 +599,7 @@ input,button,a,option,select{
         padding: 7px;
         border-radius: 19px;
         font-size: 13px;
+        cursor: pointer;
       }
     }
     .orange-border {
@@ -615,48 +626,7 @@ input,button,a,option,select{
 
 
 }
-$lessposition:0;
-.month{
-  animation: foo 0.25s linear;
-  animation-fill-mode: forwards;
-  @keyframes foo{
-    from{
-      left: $lessposition;
-    }
-    to{
-      left: 24.99%;
-      $lessposition:24.99%;
-    }
-  }
-}
 
-.week{
-animation: foo2 0.25s linear;
-  animation-fill-mode: forwards;
-@keyframes foo2{
-  from{
-    left: $lessposition;
-  }
-  to{
-    left: 0%;
-    $lessposition : 0%;
-  }
-}
-}
-
-.year{
-  animation: foo3 0.25s linear;
-animation-fill-mode: forwards;
-@keyframes foo3{
-  from{
-    left: $lessposition;
-  }
-  to{
-    left: 50%;
-    $lessposition:50%;
-  }
-}
-}
 
 
 
