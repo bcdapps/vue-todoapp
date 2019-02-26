@@ -1,5 +1,12 @@
 <template>
   <div>
+    <div v-if="shownoti" class="notification">
+      <div>
+        <h1 class="notification-h1">Notification</h1>
+        <p>{{notification_msg}}</p>
+      </div>
+      <div><img class="notification-cancel-icon" src="../../assets/images/cancel.png"/></div>
+    </div>
     <div class="right">
       <div @click="handleAddTask" class="close-container center gray" id="close">
         <img src="../../assets/images/cancel.png" />
@@ -17,13 +24,13 @@
     <div class="input-container">
       <p class="input-lable-p">Name the task</p>
       <div class="seven-columns">
-        <div @click="handleclick('monday')" class="active-day">Mon</div>
-        <div @click="handleclick('tuesday')" class="active-day">Tue</div>
-        <div @click="handleclick('wednesday')">Wed</div>
-        <div @click="handleclick('thursday')" >Thu</div>
-        <div @click="handleclick('friday')" class="unactive-day">Fri</div>
-        <div @click="handleclick('saturay')">Sat</div>
-        <div @click="handleclick('sunday')" >Sun</div>
+        <div @click="handleclick('monday')" :class="weektask['monday'].task ? 'active-day':'unactive-day'">Mon</div>
+        <div @click="handleclick('tuesday')" :class="weektask['tuesday'].task ? 'active-day':'unactive-day'">Tue</div>
+        <div @click="handleclick('wednesday')" :class="weektask['wednesday'].task ? 'active-day':'unactive-day'">Wed</div>
+        <div @click="handleclick('thursday')" :class="weektask['thursday'].task ? 'active-day':'unactive-day'">Thu</div>
+        <div @click="handleclick('friday')" :class="weektask['friday'].task ? 'active-day':'unactive-day'">Fri</div>
+        <div @click="handleclick('saturday')" :class="weektask['saturday'].task ? 'active-day':'unactive-day'">Sat</div>
+        <div @click="handleclick('sunday')" :class="weektask['sunday'].task? 'active-day':'unactive-day'">Sun</div>
       </div>
     </div>
     <div class="input-container">
@@ -58,7 +65,10 @@
         colors: colors,
         taskcolorhex: '',
         taskcolorName: 'Pink',
+        shownoti: false,
+        notification_msg: "Task Add Successfully",
         modalAnime:false,
+        weekday: '',
         weektask: {
           monday: {
             status: '',
@@ -115,8 +125,13 @@
         this.active = !this.active;
       },
       handleclick(weekday){
-        this.weektask[weekday].status = 'pending';
-        this.weektask[weekday].task = true;
+        if(this.weektask[weekday].task){
+          this.weektask[weekday].status = '';
+          this.weektask[weekday].task = false;
+        } else {
+          this.weektask[weekday].status = 'pending';
+          this.weektask[weekday].task = true;
+        }
       },
       saveTask(){
         var ID = Math.random().toString().substring(3,6);
@@ -129,7 +144,12 @@
               title: this.taskName,
               percent: '',
               weektasks: this.weektask
-            })
+            });
+            this.shownoti = true;
+            this.notification_msg = "Task Add Successfully";
+            setTimeout(()=>{
+              this.shownoti = false;
+            }, 5000)
           }
         }
       },

@@ -52,9 +52,9 @@ input,button,a,option,select{
   border: 1px solid #61A1F5 !important;
 }
 .unactive-day{
-  background-color: #2e2e2e;
+  background-color: darkgray;
   color:white;
-  border: 1px solid #2e2e2e !important;
+  border: 1px solid darkgray !important;
 }
 .notification{
   width: 300px;
@@ -374,7 +374,7 @@ input,button,a,option,select{
 
       .time-container {
         display: grid;
-        grid-template-columns: 120px 120px 120px 120px;
+        grid-template-columns: repeat(4 , 25%);
         justify-items: center;
         background: #EEF0F2;
         border-radius: 33px;
@@ -501,10 +501,11 @@ input,button,a,option,select{
         align-items: center;
         .squares-row{
           display: grid;
-        grid-template-columns:20px 20px 20px 20px 20px 20px 20px;
+        grid-template-columns:repeat(7,30px);
         justify-content: space-between;
         color: #C8CCD2;
-        text-align: inherit;
+        text-align: center;
+        justify-items: center;
         }
       }
     }

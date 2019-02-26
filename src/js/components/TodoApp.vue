@@ -5,10 +5,10 @@
     <add-task v-bind:class="{'modal-anime':modalAnime}" @handleAddTask="handleAddTask"/>
     </div>
     </section>
-    <div class="notification">
+    <div v-if="shownoti" class="notification">
       <div>
         <h1 class="notification-h1">Notification</h1>
-        <p>Please wait..</p>
+        <p>{{notification_msg}}</p>
       </div>
       <div><img class="notification-cancel-icon" src="../../assets/images/cancel.png"/></div>
     </div>
@@ -20,7 +20,7 @@
             <div id="month" :class="yearClass === 'month'? 'blue-p':'gray-p'" @click="handleyearTab(1, 'month')">Month</div>
             <div  id="year" :class="yearClass === 'year'? 'blue-p':'gray-p'" @click="handleyearTab(2, 'year')">Year</div>
             <div id="allTime" :class="yearClass === 'allTime'? 'blue-p':'gray-p'" @click="handleyearTab(3, 'allTime')">All Time</div>
-            <span id="absolute" class="absolute-span" :style="{width: `${tabWidth}px`,transform: `translate3d(${tabIndex * tabWidth}px, 0, 0)`,transition: 'transform .5s'}"></span>
+            <span id="absolute" class="absolute-span" :style="{width: `${tabWidth}%`,transform: `translate3d(${tabIndex * (tabWidth + 75)}%, 0, 0)`,transition: 'transform .5s'}"></span>
           </div>
           <div @click="handleAddTask(true)">
             <p class="addTask" id="task-btn"><span> + </span> Add Task</p>
@@ -46,8 +46,9 @@
         </div>
 
         <div class="calender-container">
-          <div class="calender-row" id="calender-header" :style="{opacity: setopacity_block === 0.25? '0':'1'}">
-            <div></div>
+          <div class="calender-row2" id="calender-header" :style="{opacity: setopacity_block === 0.25? '0':'1'}">
+            <div class="spot-container"></div>
+            <div class="squares-row">
             <div>Mon</div>
             <div>Tue</div>
             <div>Wed</div>
@@ -55,6 +56,7 @@
             <div>Fri</div>
             <div>Sat</div>
             <div>Sun</div>
+            </div>
           </div>
           <div class="calender-row2" v-for="task in tasks">
             <div class="spot-container"><span class="spot" v-bind:style="{background: task.color}"><img class="task-cancel" src="../../assets/images/cancel.png" /></span>
@@ -119,6 +121,8 @@
   data() {
     return {
       modalOpen: false,
+      shownoti: false,
+      notification_msg: "Task Add Successfully",
       yearClass: 'week',
       alignMode: 'block',
       setopacity_block: '1',
@@ -127,7 +131,7 @@
       goals: goals,
       pendingColor: '#E0E7F4',
       tabIndex: 0,
-      tabWidth: 120,
+      tabWidth: 25,
       daySlide: 0,
       dayName: 'Today',
       weekday: [],
@@ -159,9 +163,6 @@
         easing: 'easeOutExpo',
       });
       /* ... etc ... */
-  },
-  updated() {
-    console.log("This is updated function", this.t)
   },
   methods: {
     handleyearTab(index, tabName){
