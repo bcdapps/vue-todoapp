@@ -78,12 +78,12 @@
           <div @click="handlePrevious" class="arrow-container center" id="arrow-left"> <i class="fa fa-angle-left gray "></i></div>
           <div @click="handleNext" class="arrow-container center" id="arrow-right"> <i class="fa fa-angle-right gray "></i></div>
         </div>
-        <div class="scroll-div" id="scrolling-div">
-          <div class="right-container" v-for="(week, index) in weekday">
+        <div class="scroll-div" id="scrolling-div" v-for="(week, index) in weekday" v-if="index === daySlide">
+          <div class="right-container">
             <header>
               <div class="double-rows">
-                <p class="small-para ">Yesterday</p>
-                <p class="big-para">{{getYesterday()}}</p>
+                <p class="small-para ">{{dayName}}</p>
+                <p class="big-para">{{getDay(index)}}</p>
               </div>
             </header>
             <div>
@@ -102,28 +102,6 @@
 
             </div>
           </div>
-          <!--<div class="right-container" v-if="daySlide === 'next'">-->
-            <!--<header>-->
-              <!--<div class="double-rows">-->
-                <!--<p class="small-para ">Today</p>-->
-                <!--<p class="big-para">{{getToday()}}</p>-->
-              <!--</div>-->
-            <!--</header>-->
-            <!--<div>-->
-              <!--<div v-for="(task, index) in tasks" v-if="task.weektasks[day].task" v-bind:style="{borderLeft: `2px solid ${task.color}`}" class="block mark-complete-block">-->
-                <!--<div class="two-cols block-row1">-->
-                  <!--<p class="big-para">{{task.title}}</p>-->
-                <!--</div>-->
-                <!--<div v-if="task.weektasks[day].status === 'complete'"  class="two-cols block-row1">-->
-                  <!--<p class="small-para"><span><img class="tick-img" src="../../assets/images/tick.png" />Complete</span></p>-->
-                  <!--<p @click="handleUndo(index, day)"  class="small-para red" v-bind:style="{color: '#ECC4CA',cursor: 'pointer'}">Undo</p>-->
-                <!--</div>-->
-                <!--<div v-else class="block-row1">-->
-                  <!--<div @click="handleComplete(index, day)" class="mark-complete center"> Mark Complete </div>-->
-                <!--</div>-->
-              <!--</div>-->
-            <!--</div>-->
-          <!--</div>-->
         </div>
 
       </div>
@@ -134,12 +112,10 @@
 </template>
 
 <script>
-
   import AddTask from './AddTask';
   import {tasks, goals} from '../TaskDB/db';
   export default {
-  name: 'hello',
-  // name: "my-component",
+  name: 'TodoApp',
   data() {
     return {
       modalOpen: false,
@@ -147,44 +123,13 @@
       alignMode: 'block',
       setopacity_block: '1',
       setopacity_left: '0.25',
-      show:true,
-      month:false,
-      week:false,
-      year:false,
-      color1:'#deebfb',
-      color2:'#C6CAD1',
-      color3:'#C6CAD1',
-      color4:'#C6CAD1',
-      t: '0%',
-      modalAnime:false,
-      tabs:[
-      {
-        key:'week',
-        val:'week'
-      },
-       {
-        key:'month',
-        val:'month'
-      },
-       {
-        key:'year',
-        val:'year'
-      },
-       {
-        key:'all',
-        val:'All times'
-      },
-      ],
-      show: true,
       tasks: tasks,
       goals: goals,
       pendingColor: '#E0E7F4',
-      dayIndex: 0,
-      day: 0,
-      yesday: 0,
       tabIndex: 0,
       tabWidth: 120,
-      daySlide: '',
+      daySlide: 0,
+      dayName: 'Today',
       weekday: [],
     };
   },
@@ -196,9 +141,7 @@
     var d = new Date();
     var n = d.getDay();
     this.weekday = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
-    this.dayIndex = n;
-    this.daySlide = this.weekday[n];
-    this.yesday = this.weekday[n-1];
+    this.daySlide = n-1;
   },
   mounted() {
     const targets = this.$el;
@@ -230,10 +173,14 @@
       this.modalAnime=true;
     },
     handlePrevious(){
-      this.daySlide = this.weekday[this.daySlide - 1];
+      if(this.daySlide >= 1) {
+        this.daySlide = this.daySlide - 1;
+      }
     },
     handleNext(){
-      this.daySlide = this.weekday[this.daySlide + 1];
+      if(this.daySlide <=5) {
+        this.daySlide = this.daySlide + 1;
+      }
     },
     handleAlign(mode){
       if(mode === 'block'){
@@ -259,9 +206,12 @@
       let date = new Date(d.setDate(diff));
       return date.toDateString().substring(0, date.toDateString().length-4);
     },
-    getToday() {
+    getDay(num) {
       let d = new Date();
-      return d.toDateString().substring(0, d.toDateString().length-4);
+      var day = d.getDay(),
+        diff = d.getDate() - day + (day == 0 ? -6 : num+1);
+      let date = new Date(d.setDate(diff));
+      return date.toDateString().substring(0, date.toDateString().length-4);
     },
     getMonth() {
       const date = new Date();  // 2009-11-10
