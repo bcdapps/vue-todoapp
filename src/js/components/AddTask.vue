@@ -23,7 +23,7 @@
           <div @click="handleclick('wednesday')">Wed</div>
           <div @click="handleclick('thursday')">Thu</div>
           <div @click="handleclick('friday')">Fri</div>
-          <div @click="handleclick('saturay')">Sat</div>
+          <div @click="handleclick('saturday')">Sat</div>
           <div @click="handleclick('sunday')">Sun</div>
         </div>
       </div>
@@ -165,7 +165,7 @@
             status: '',
             task: false,
           },
-        },;
+        }
       }
     }
   };

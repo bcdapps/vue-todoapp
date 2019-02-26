@@ -313,20 +313,19 @@ input,button,a,option,select{
 
       .time-container {
         display: grid;
-        grid-template-columns: 24% 24% 24% 24%;
-        grid-gap: 1.2%;
+        grid-template-columns: 120px 120px 120px 120px;
         justify-items: center;
         background: #EEF0F2;
         border-radius: 33px;
         position: relative;
         z-index: 0;
-
         &>div {
           position: relative;
           z-index: 2;
           font-size: 14px;
           padding: 10px 0px;
-          width: 114px;
+          display: block;
+          width: 100%;
           text-align: center;
           border-radius: 33px;
           &>hover {
@@ -394,8 +393,9 @@ input,button,a,option,select{
       .spot-container {
         display: flex;
         align-items: center;
-
-
+        .task-cancel {
+          width:7px;
+        }
       }
 
       .square {
@@ -556,37 +556,7 @@ input,button,a,option,select{
     }
 
   }
-
-
-
-
-
-
 }
-
-.month{
-  animation: foo 0.25s linear;
-  animation-fill-mode: forwards;
-  @keyframes foo{
-    to{
-      left: 24.99%;
-    }
-  }
-}
-
-.week{
-animation: foo2 0.25s linear;
-animation-fill-mode: forwards;
-@keyframes foo2{
-  to{
-    left: 0%;
-  }
-}
-}
-
-
-
-
 
 ///////@at-root
 .fade-leave-active {
