@@ -48,8 +48,9 @@
         </div>
 
         <div class="calender-container">
-          <div class="calender-row" id="calender-header" :style="{opacity: setopacity_block === 0.25? '0':'1'}">
-            <div></div>
+          <div class="calender-row2" id="calender-header" :style="{opacity: setopacity_block === 0.25? '0':'1'}">
+            <div class="spot-container"></div>
+            <div class="squares-row">
             <div>Mon</div>
             <div>Tue</div>
             <div>Wed</div>
@@ -57,6 +58,7 @@
             <div>Fri</div>
             <div>Sat</div>
             <div>Sun</div>
+            </div>
           </div>
           <div class="calender-row2" v-for="task in tasks">
             <div class="spot-container"><span class="spot" v-bind:style="{background: task.color}"></span>
