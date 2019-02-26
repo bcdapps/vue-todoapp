@@ -1,6 +1,17 @@
 <template>
-  <div>
-    <add-task v-if="modalOpen" @handleAddTask="handleAddTask"/>
+  <div class="main-page">
+    <section class="modal-body"  v-if="modalOpen" id="modal-body">
+    <div v-bind:class="{modal:true,'modal-anime':modalAnime}" id="modal" >
+    <add-task v-bind:class="{'modal-anime':modalAnime}" @handleAddTask="handleAddTask"/>
+    </div>
+    </section>
+    <div class="notification">
+      <div>
+        <h1 class="notification-h1">Notification</h1>
+        <p>Please wait..</p>
+      </div>
+      <div><img class="notification-cancel-icon" src="../../assets/images/cancel.png"/></div>
+    </div>
     <section class="main-container">
       <div class="left-container">
         <header>
@@ -88,6 +99,7 @@
                   <div @click="handleComplete(index, week)" class="mark-complete center"> Mark Complete </div>
                 </div>
               </div>
+
             </div>
           </div>
           <!--<div class="right-container" v-if="daySlide === 'next'">-->
@@ -113,6 +125,7 @@
             <!--</div>-->
           <!--</div>-->
         </div>
+
       </div>
     </section>
   </div>
@@ -121,10 +134,12 @@
 </template>
 
 <script>
+
   import AddTask from './AddTask';
   import {tasks, goals} from '../TaskDB/db';
-export default {
+  export default {
   name: 'hello',
+  // name: "my-component",
   data() {
     return {
       modalOpen: false,
@@ -132,6 +147,34 @@ export default {
       alignMode: 'block',
       setopacity_block: '1',
       setopacity_left: '0.25',
+      show:true,
+      month:false,
+      week:false,
+      year:false,
+      color1:'#deebfb',
+      color2:'#C6CAD1',
+      color3:'#C6CAD1',
+      color4:'#C6CAD1',
+      t: '0%',
+      modalAnime:false,
+      tabs:[
+      {
+        key:'week',
+        val:'week'
+      },
+       {
+        key:'month',
+        val:'month'
+      },
+       {
+        key:'year',
+        val:'year'
+      },
+       {
+        key:'all',
+        val:'All times'
+      },
+      ],
       show: true,
       tasks: tasks,
       goals: goals,
@@ -157,6 +200,26 @@ export default {
     this.daySlide = this.weekday[n];
     this.yesday = this.weekday[n-1];
   },
+  mounted() {
+    const targets = this.$el;
+    this
+      .$anime
+      .timeline()
+      .add({
+        targets,
+        translateX: 0,
+        easing: 'easeOutExpo',
+      })
+      .add({
+        targets,
+        translateX: 0,
+        easing: 'easeOutExpo',
+      });
+      /* ... etc ... */
+  },
+  updated() {
+    console.log("This is updated function", this.t)
+  },
   methods: {
     handleyearTab(index, tabName){
       this.yearClass = tabName;
@@ -164,6 +227,7 @@ export default {
     },
     handleAddTask(action){
       this.modalOpen = action;
+      this.modalAnime=true;
     },
     handlePrevious(){
       this.daySlide = this.weekday[this.daySlide - 1];
@@ -214,9 +278,9 @@ export default {
     },
     handleUndo(id, day){
       this.tasks[id].weektasks[day].status = 'pending';
-    }
-  }
+    },
 
+  },
 };
 </script>
 

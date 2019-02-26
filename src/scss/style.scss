@@ -28,7 +28,64 @@ input,button,a,option,select{
   padding: 0 3px;
   color: #E0E7F4;
 }
+.main-page{
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+}
+.modal-anime{
+  animation: foo 0.45s linear;
+  @keyframes foo {
+    from{
+      right: -500px;
+    }
+    to{
+      right: 0;
+    }
+  }
+}
+.active-day{
+  background: #61A1F5;
+  color:white;
+  border: 1px solid #61A1F5 !important;
+}
+.unactive-day{
+  background-color: #2e2e2e;
+  color:white;
+  border: 1px solid #2e2e2e !important;
+}
+.notification{
+  width: 300px;
+  display: grid;
+  grid-template-columns: auto 20px;
+  justify-content: space-between;
+  padding: 16px;
+  position: fixed;
+  right: 20px;
+  top: 20px;
+  z-index: 3;
+  box-shadow: 1px 2px 10px -1px grey;
+  border-radius: 4px;
+  background: #fff;
 
+
+  .notification-cancel-icon{
+    width: 9px;
+    padding: 4px;
+    // background: gray;
+    border: 1px solid gray;
+    border-radius: 16px;
+    color: white;
+  }
+  .notification-h1{
+    font-size: 17px;
+  }
+  p{
+    font-size: 12.5px;
+  }
+}
 .center {
   display: grid;
   justify-content: center;
@@ -166,7 +223,6 @@ input,button,a,option,select{
       .wrapper-dropdown {
         position: relative;
         width: 200px;
-        background: #FFF;
         color: #2e2e2e;
         outline: none;
         cursor: pointer;
@@ -175,6 +231,7 @@ input,button,a,option,select{
           display: flex;
           border: 1px solid #ababab;
           padding: 5px;
+          border-radius: 3px;
           span {
             padding: 0 12px;
             margin-right: 5px;
@@ -257,14 +314,19 @@ input,button,a,option,select{
     .seven-columns{
       display: grid ;
       grid-template-columns: repeat(7,auto);
-      & > input{
-        padding: 10px 1px;
+      & > div{
         width: 34px;
+        display: grid;
+        justify-content: center;
+        align-items: center;
+        height: 34px;
         text-align: center;
         grid-gap: 10px;
+        font-size: 13.5px;
         border: 1px solid gray;
         border-radius: 3px;
       }
+
 
     }
   }
@@ -296,8 +358,7 @@ input,button,a,option,select{
 
 
 .main-container {
-  max-width: 960px;
-  margin: 150px auto 0;
+ width: 960px;
   padding: 20px;
   display: grid;
   grid-template-columns: 67% 24.5%;
@@ -306,7 +367,7 @@ input,button,a,option,select{
   .left-container {
     &>header {
       display: grid;
-      grid-template-columns: 74% auto;
+      grid-template-columns: 80% auto;
       grid-gap: 5%;
       justify-content: space-between;
       align-items: center;
@@ -328,6 +389,7 @@ input,button,a,option,select{
           width: 100%;
           text-align: center;
           border-radius: 33px;
+          width: 100%;
           &>hover {
             color: #DBEBFD;
           }
@@ -338,8 +400,8 @@ input,button,a,option,select{
           background: #61A1F5;
           position: absolute;
           top: 0;
-          left: 0%;
-          width: 111px;
+          left: 0;
+          width: 25%;
           height: 39px;
           z-index: 1;
         }
@@ -431,7 +493,7 @@ input,button,a,option,select{
 
       .calender-row2{
         display: grid;
-        grid-template-columns:153px auto;
+        grid-template-columns:138px auto;
         color: #C8CCD2;
         font-size: 14px;
         text-align: center;
@@ -469,11 +531,13 @@ input,button,a,option,select{
       outline: 1px solid white;
     }
     .arrows-div {
-      position: fixed;
+      position: absolute;
       display: grid;
       grid-template-columns: auto auto;
       justify-content: space-between;
       grid-gap: 193px;
+      left: 0;
+      top: 0;
     }
     .scroll-div{
       width: 100%;
@@ -537,6 +601,7 @@ input,button,a,option,select{
         padding: 7px;
         border-radius: 19px;
         font-size: 13px;
+        cursor: pointer;
       }
     }
     .orange-border {
