@@ -5,10 +5,10 @@
     <add-task v-bind:class="{'modal-anime':modalAnime}" @handleAddTask="handleAddTask"/>
     </div>
     </section>
-    <div class="notification">
+    <div v-if="shownoti" class="notification">
       <div>
         <h1 class="notification-h1">Notification</h1>
-        <p>Please wait..</p>
+        <p>{{notification_msg}}</p>
       </div>
       <div><img class="notification-cancel-icon" src="../../assets/images/cancel.png"/></div>
     </div>
@@ -20,7 +20,7 @@
             <div id="month" :class="yearClass === 'month'? 'blue-p':'gray-p'" @click="handleyearTab(1, 'month')">Month</div>
             <div  id="year" :class="yearClass === 'year'? 'blue-p':'gray-p'" @click="handleyearTab(2, 'year')">Year</div>
             <div id="allTime" :class="yearClass === 'allTime'? 'blue-p':'gray-p'" @click="handleyearTab(3, 'allTime')">All Time</div>
-            <span id="absolute" class="absolute-span" :style="{width: `${tabWidth}px`,transform: `translate3d(${tabIndex * tabWidth}px, 0, 0)`,transition: 'transform .5s'}"></span>
+            <span id="absolute" class="absolute-span" :style="{width: `${tabWidth}%`,transform: `translate3d(${tabIndex * (tabWidth + 75)}%, 0, 0)`,transition: 'transform .5s'}"></span>
           </div>
           <div @click="handleAddTask(true)">
             <p class="addTask" id="task-btn"><span> + </span> Add Task</p>
@@ -77,16 +77,26 @@
       </div>
       <div class="Right-container">
         <div class="arrows-div" >
-            <div @click="handlePrevious" class="arrow-container center" id="arrow-left" > <i class="fa fa-angle-left gray "></i></div>
-            <div @click="handleNext" class="arrow-container center" id="arrow-right" > <i class="fa fa-angle-right gray "></i></div>
-          </div>
+          <div @click="handlePrevious" class="arrow-container center" id="arrow-left"> <i class="fa fa-angle-left gray "></i></div>
+          <div @click="handleNext" class="arrow-container center" id="arrow-right"> <i class="fa fa-angle-right gray "></i></div>
+        </div>
         <div class="main-div-right-container">
-          <div class="scroll-div" id="scrolling-div" v-bind:style="{'margin-left':marginLeft+'px','transition':'0.3s'}">
-            <div class="right-container" v-for="(week, index) in weekday" >
-              <header>
-                <div class="double-rows">
-                  <p class="small-para ">Yesterday</p>
-                  <p class="big-para">{{getYesterday()}}</p>
+        <div class="scroll-div" id="scrolling-div" v-for="(week, index) in weekday" v-if="index === daySlide">
+          <div class="right-container">
+            <header>
+              <div class="double-rows">
+                <p class="small-para ">{{dayName}}</p>
+                <p class="big-para">{{getDay(index)}}</p>
+              </div>
+            </header>
+            <div>
+              <div v-for="(task, index) in tasks" v-if="task.weektasks[week].task" v-bind:style="{borderLeft: `2px solid ${task.color}`}" class="block mark-complete-block">
+                <div class="two-cols block-row1">
+                  <p class="big-para">{{task.title}}</p>
+                </div>
+                <div v-if="task.weektasks[week].status === 'complete'"  class="two-cols block-row1">
+                  <p class="small-para"><span><img class="tick-img" src="../../assets/images/tick.png" />Complete</span></p>
+                  <p @click="handleUndo(index, week)"  class="small-para red" v-bind:style="{color: '#ECC4CA',cursor: 'pointer'}">Undo</p>
                 </div>
               </header>
               <div>
@@ -105,29 +115,8 @@
 
               </div>
             </div>
-            <!--<div class="right-container" v-if="daySlide === 'next'">-->
-              <!--<header>-->
-                <!--<div class="double-rows">-->
-                  <!--<p class="small-para ">Today</p>-->
-                  <!--<p class="big-para">{{getToday()}}</p>-->
-                <!--</div>-->
-              <!--</header>-->
-              <!--<div>-->
-                <!--<div v-for="(task, index) in tasks" v-if="task.weektasks[day].task" v-bind:style="{borderLeft: `2px solid ${task.color}`}" class="block mark-complete-block">-->
-                  <!--<div class="two-cols block-row1">-->
-                    <!--<p class="big-para">{{task.title}}</p>-->
-                  <!--</div>-->
-                  <!--<div v-if="task.weektasks[day].status === 'complete'"  class="two-cols block-row1">-->
-                    <!--<p class="small-para"><span><img class="tick-img" src="../../assets/images/tick.png" />Complete</span></p>-->
-                    <!--<p @click="handleUndo(index, day)"  class="small-para red" v-bind:style="{color: '#ECC4CA',cursor: 'pointer'}">Undo</p>-->
-                  <!--</div>-->
-                  <!--<div v-else class="block-row1">-->
-                    <!--<div @click="handleComplete(index, day)" class="mark-complete center"> Mark Complete </div>-->
-                  <!--</div>-->
-                <!--</div>-->
-              <!--</div>-->
-            <!--</div>-->
           </div>
+        </div>
 
         </div>
       </div>
@@ -138,60 +127,27 @@
 </template>
 
 <script>
-
   import AddTask from './AddTask';
   import {tasks, goals} from '../TaskDB/db';
   export default {
-  name: 'hello',
-  // name: "my-component",
+  name: 'TodoApp',
   data() {
     return {
       modalOpen: false,
+      shownoti: false,
+      notification_msg: "Task Add Successfully",
       yearClass: 'week',
       alignMode: 'block',
       setopacity_block: '1',
       setopacity_left: '0.25',
-      show:true,
-      month:false,
-      week:false,
-      year:false,
-      color1:'#deebfb',
-      color2:'#C6CAD1',
-      color3:'#C6CAD1',
-      color4:'#C6CAD1',
-      t: '0%',
       modalAnime:false,
-      marginLeft:0,
-      marginRight:'0',
-      a:0,
-      tabs:[
-      {
-        key:'week',
-        val:'week'
-      },
-       {
-        key:'month',
-        val:'month'
-      },
-       {
-        key:'year',
-        val:'year'
-      },
-       {
-        key:'all',
-        val:'All times'
-      },
-      ],
-      show: true,
       tasks: tasks,
       goals: goals,
       pendingColor: '#E0E7F4',
-      dayIndex: 0,
-      day: 0,
-      yesday: 0,
       tabIndex: 0,
-      tabWidth: 120,
-      daySlide: '',
+      tabWidth: 25,
+      daySlide: 0,
+      dayName: 'Today',
       weekday: [],
     };
   },
@@ -203,9 +159,7 @@
     var d = new Date();
     var n = d.getDay();
     this.weekday = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
-    this.dayIndex = n;
-    this.daySlide = this.weekday[n];
-    this.yesday = this.weekday[n-1];
+    this.daySlide = n-1;
   },
   mounted() {
     const targets = this.$el;
@@ -224,9 +178,6 @@
       });
       /* ... etc ... */
   },
-  updated() {
-    console.log("This is updated function", this.t)
-  },
   methods: {
     handleyearTab(index, tabName){
       this.yearClass = tabName;
@@ -237,14 +188,14 @@
       this.modalAnime=true;
     },
     handlePrevious(){
-      this.daySlide = this.weekday[this.daySlide - 1];
-      this.marginLeft+=210;
+      if(this.daySlide >= 1) {
+        this.daySlide = this.daySlide - 1;
+      }
     },
     handleNext(){
-      this.daySlide = this.weekday[this.daySlide + 1];
-      this.marginLeft+=210;
-      // this.a+=250;
-      // console.log(this.a);
+      if(this.daySlide <=5) {
+        this.daySlide = this.daySlide + 1;
+      }
     },
     handleAlign(mode){
       if(mode === 'block'){
@@ -270,9 +221,12 @@
       let date = new Date(d.setDate(diff));
       return date.toDateString().substring(0, date.toDateString().length-4);
     },
-    getToday() {
+    getDay(num) {
       let d = new Date();
-      return d.toDateString().substring(0, d.toDateString().length-4);
+      var day = d.getDay(),
+        diff = d.getDate() - day + (day == 0 ? -6 : num+1);
+      let date = new Date(d.setDate(diff));
+      return date.toDateString().substring(0, date.toDateString().length-4);
     },
     getMonth() {
       const date = new Date();  // 2009-11-10
