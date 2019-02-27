@@ -1,9 +1,9 @@
 <template>
   <div class="main-page">
     <section class="modal-body"  v-if="modalOpen" id="modal-body">
-    <div v-bind:class="{modal:true,'modal-anime':modalAnime}" id="modal" >
-    <add-task v-bind:class="{'modal-anime':modalAnime}" @handleAddTask="handleAddTask"/>
-    </div>
+      <div v-bind:class="{modal:true,'modal-anime':modalAnime}" id="modal" >
+        <add-task v-bind:class="{'modal-anime':modalAnime}" @handleAddTask="handleAddTask"/>
+      </div>
     </section>
     <notification v-if="shownoti" :notification_msg="notification_msg" />
     <section class="main-container">
@@ -74,23 +74,13 @@
           <div @click="handlePrevious" class="arrow-container center" id="arrow-left"> <i class="fa fa-angle-left gray "></i></div>
           <div @click="handleNext" class="arrow-container center" id="arrow-right"> <i class="fa fa-angle-right gray "></i></div>
         </div>
-        <div class="main-div-right-container">
-        <div class="scroll-div" id="scrolling-div" v-for="(week, index) in weekday" v-if="index === daySlide">
-          <div class="right-container">
-            <header>
-              <div class="double-rows">
-                <p class="small-para ">{{dayName}}</p>
-                <p class="big-para">{{getDay(index)}}</p>
-              </div>
-            </header>
-            <div>
-              <div v-for="(task, index) in tasks" v-if="task.weektasks[week].task" v-bind:style="{borderLeft: `2px solid ${task.color}`}" class="block mark-complete-block">
-                <div class="two-cols block-row1">
-                  <p class="big-para">{{task.title}}</p>
-                </div>
-                <div v-if="task.weektasks[week].status === 'complete'"  class="two-cols block-row1">
-                  <p class="small-para"><span><img class="tick-img" src="../../assets/images/tick.png" />Complete</span></p>
-                  <p @click="handleUndo(index, week)"  class="small-para red" v-bind:style="{color: '#ECC4CA',cursor: 'pointer'}">Undo</p>
+        <div class="main-div-right-container" :style="{width: `${divWidth}px`,transform: `translate3d(${divWidth - ( divWidth + (divIndex * daySlide))}px, 0, 0)`,transition: 'transform .9s'}">
+          <div class="scroll-div" id="scrolling-div" v-for="(week, index) in weekday" >
+            <div class="right-container">
+              <header>
+                <div class="double-rows">
+                  <p class="small-para ">{{dayName}}</p>
+                  <p class="big-para">{{getDay(index)}}</p>
                 </div>
               </header>
               <div>
@@ -106,18 +96,13 @@
                     <div @click="handleComplete(index, week)" class="mark-complete center"> Mark Complete </div>
                   </div>
                 </div>
-
               </div>
             </div>
           </div>
         </div>
-
-        </div>
       </div>
     </section>
   </div>
-
-
 </template>
 
 <script>
@@ -141,6 +126,8 @@
       pendingColor: '#E0E7F4',
       tabIndex: 0,
       tabWidth: 25,
+      divWidth: 1660,
+      divIndex: 256,
       daySlide: 0,
       dayName: 'Today',
       weekday: [],

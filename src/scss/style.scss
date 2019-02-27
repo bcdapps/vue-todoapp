@@ -473,8 +473,8 @@ input,button,a,option,select{
       }
 
       .spot {
-        width: 12px;
-        height: 12px;
+        width: 13px;
+        height: 13px;
         border-radius: 20px;
         display: grid;
         cursor: pointer;
@@ -515,6 +515,8 @@ input,button,a,option,select{
   }
   .Right-container{
     position: relative;
+    overflow-x: hidden;
+    width: 240px;
     .arrows-div {
       position: absolute;
       display: grid;
@@ -523,15 +525,15 @@ input,button,a,option,select{
       grid-gap: 193px;
       left: 0;
       top: 0;
+      z-index: 1;
     }
   }
   .main-div-right-container{
-    overflow-x: auto;
-    display: grid;
-    flex-wrap: wrap;
-    width: 255px;
-    grid-template-columns: auto auto;
-    grid-gap: 20px;
+    //display: grid;
+    //flex-wrap: wrap;
+    //grid-template-columns: auto auto;
+    //grid-gap: 20px;
+    display: flex;
     // position: relative;
     &::-webkit-scrollbar {
       width: 1em;
@@ -546,7 +548,7 @@ input,button,a,option,select{
       background-color: white;
       outline: 1px solid white;
     }
-    
+
     .scroll-div{
       width: 100%;
       display: flex;
