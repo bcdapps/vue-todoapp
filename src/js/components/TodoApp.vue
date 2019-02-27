@@ -69,11 +69,12 @@
           </div>
         </div>
       </div>
-      <div class="main-div-right-container">
+      <div class="Right-container">
         <div class="arrows-div" >
           <div @click="handlePrevious" class="arrow-container center" id="arrow-left"> <i class="fa fa-angle-left gray "></i></div>
           <div @click="handleNext" class="arrow-container center" id="arrow-right"> <i class="fa fa-angle-right gray "></i></div>
         </div>
+        <div class="main-div-right-container">
         <div class="scroll-div" id="scrolling-div" v-for="(week, index) in weekday" v-if="index === daySlide">
           <div class="right-container">
             <header>
@@ -91,15 +92,27 @@
                   <p class="small-para"><span><img class="tick-img" src="../../assets/images/tick.png" />Complete</span></p>
                   <p @click="handleUndo(index, week)"  class="small-para red" v-bind:style="{color: '#ECC4CA',cursor: 'pointer'}">Undo</p>
                 </div>
-                <div v-else class="block-row1">
-                  <div @click="handleComplete(index, week)" class="mark-complete center"> Mark Complete </div>
+              </header>
+              <div>
+                <div v-for="(task, index) in tasks" v-if="task.weektasks[week].task" v-bind:style="{borderLeft: `2px solid ${task.color}`}" class="block mark-complete-block">
+                  <div class="two-cols block-row1">
+                    <p class="big-para">{{task.title}}</p>
+                  </div>
+                  <div v-if="task.weektasks[week].status === 'complete'"  class="two-cols block-row1">
+                    <p class="small-para"><span><img class="tick-img" src="../../assets/images/tick.png" />Complete</span></p>
+                    <p @click="handleUndo(index, week)"  class="small-para red" v-bind:style="{color: '#ECC4CA',cursor: 'pointer'}">Undo</p>
+                  </div>
+                  <div v-else class="block-row1">
+                    <div @click="handleComplete(index, week)" class="mark-complete center"> Mark Complete </div>
+                  </div>
                 </div>
-              </div>
 
+              </div>
             </div>
           </div>
         </div>
 
+        </div>
       </div>
     </section>
   </div>
@@ -122,6 +135,7 @@
       alignMode: 'block',
       setopacity_block: '1',
       setopacity_left: '0.25',
+      modalAnime:false,
       tasks: tasks,
       goals: goals,
       pendingColor: '#E0E7F4',
