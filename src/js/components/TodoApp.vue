@@ -75,59 +75,61 @@
           </div>
         </div>
       </div>
-      <div class="main-div-right-container">
+      <div class="Right-container">
         <div class="arrows-div" >
-          <div @click="handlePrevious" class="arrow-container center" id="arrow-left"> <i class="fa fa-angle-left gray "></i></div>
-          <div @click="handleNext" class="arrow-container center" id="arrow-right"> <i class="fa fa-angle-right gray "></i></div>
-        </div>
-        <div class="scroll-div" id="scrolling-div">
-          <div class="right-container" v-for="(week, index) in weekday">
-            <header>
-              <div class="double-rows">
-                <p class="small-para ">Yesterday</p>
-                <p class="big-para">{{getYesterday()}}</p>
-              </div>
-            </header>
-            <div>
-              <div v-for="(task, index) in tasks" v-if="task.weektasks[week].task" v-bind:style="{borderLeft: `2px solid ${task.color}`}" class="block mark-complete-block">
-                <div class="two-cols block-row1">
-                  <p class="big-para">{{task.title}}</p>
-                </div>
-                <div v-if="task.weektasks[week].status === 'complete'"  class="two-cols block-row1">
-                  <p class="small-para"><span><img class="tick-img" src="../../assets/images/tick.png" />Complete</span></p>
-                  <p @click="handleUndo(index, week)"  class="small-para red" v-bind:style="{color: '#ECC4CA',cursor: 'pointer'}">Undo</p>
-                </div>
-                <div v-else class="block-row1">
-                  <div @click="handleComplete(index, week)" class="mark-complete center"> Mark Complete </div>
-                </div>
-              </div>
-
-            </div>
+            <div @click="handlePrevious" class="arrow-container center" id="arrow-left" > <i class="fa fa-angle-left gray "></i></div>
+            <div @click="handleNext" class="arrow-container center" id="arrow-right" > <i class="fa fa-angle-right gray "></i></div>
           </div>
-          <!--<div class="right-container" v-if="daySlide === 'next'">-->
-            <!--<header>-->
-              <!--<div class="double-rows">-->
-                <!--<p class="small-para ">Today</p>-->
-                <!--<p class="big-para">{{getToday()}}</p>-->
-              <!--</div>-->
-            <!--</header>-->
-            <!--<div>-->
-              <!--<div v-for="(task, index) in tasks" v-if="task.weektasks[day].task" v-bind:style="{borderLeft: `2px solid ${task.color}`}" class="block mark-complete-block">-->
-                <!--<div class="two-cols block-row1">-->
-                  <!--<p class="big-para">{{task.title}}</p>-->
+        <div class="main-div-right-container">
+          <div class="scroll-div" id="scrolling-div" v-bind:style="{'margin-left':marginLeft+'px','transition':'0.3s'}">
+            <div class="right-container" v-for="(week, index) in weekday" >
+              <header>
+                <div class="double-rows">
+                  <p class="small-para ">Yesterday</p>
+                  <p class="big-para">{{getYesterday()}}</p>
+                </div>
+              </header>
+              <div>
+                <div v-for="(task, index) in tasks" v-if="task.weektasks[week].task" v-bind:style="{borderLeft: `2px solid ${task.color}`}" class="block mark-complete-block">
+                  <div class="two-cols block-row1">
+                    <p class="big-para">{{task.title}}</p>
+                  </div>
+                  <div v-if="task.weektasks[week].status === 'complete'"  class="two-cols block-row1">
+                    <p class="small-para"><span><img class="tick-img" src="../../assets/images/tick.png" />Complete</span></p>
+                    <p @click="handleUndo(index, week)"  class="small-para red" v-bind:style="{color: '#ECC4CA',cursor: 'pointer'}">Undo</p>
+                  </div>
+                  <div v-else class="block-row1">
+                    <div @click="handleComplete(index, week)" class="mark-complete center"> Mark Complete </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <!--<div class="right-container" v-if="daySlide === 'next'">-->
+              <!--<header>-->
+                <!--<div class="double-rows">-->
+                  <!--<p class="small-para ">Today</p>-->
+                  <!--<p class="big-para">{{getToday()}}</p>-->
                 <!--</div>-->
-                <!--<div v-if="task.weektasks[day].status === 'complete'"  class="two-cols block-row1">-->
-                  <!--<p class="small-para"><span><img class="tick-img" src="../../assets/images/tick.png" />Complete</span></p>-->
-                  <!--<p @click="handleUndo(index, day)"  class="small-para red" v-bind:style="{color: '#ECC4CA',cursor: 'pointer'}">Undo</p>-->
-                <!--</div>-->
-                <!--<div v-else class="block-row1">-->
-                  <!--<div @click="handleComplete(index, day)" class="mark-complete center"> Mark Complete </div>-->
+              <!--</header>-->
+              <!--<div>-->
+                <!--<div v-for="(task, index) in tasks" v-if="task.weektasks[day].task" v-bind:style="{borderLeft: `2px solid ${task.color}`}" class="block mark-complete-block">-->
+                  <!--<div class="two-cols block-row1">-->
+                    <!--<p class="big-para">{{task.title}}</p>-->
+                  <!--</div>-->
+                  <!--<div v-if="task.weektasks[day].status === 'complete'"  class="two-cols block-row1">-->
+                    <!--<p class="small-para"><span><img class="tick-img" src="../../assets/images/tick.png" />Complete</span></p>-->
+                    <!--<p @click="handleUndo(index, day)"  class="small-para red" v-bind:style="{color: '#ECC4CA',cursor: 'pointer'}">Undo</p>-->
+                  <!--</div>-->
+                  <!--<div v-else class="block-row1">-->
+                    <!--<div @click="handleComplete(index, day)" class="mark-complete center"> Mark Complete </div>-->
+                  <!--</div>-->
                 <!--</div>-->
               <!--</div>-->
             <!--</div>-->
-          <!--</div>-->
-        </div>
+          </div>
 
+        </div>
       </div>
     </section>
   </div>
@@ -159,6 +161,9 @@
       color4:'#C6CAD1',
       t: '0%',
       modalAnime:false,
+      marginLeft:0,
+      marginRight:'0',
+      a:0,
       tabs:[
       {
         key:'week',
@@ -233,9 +238,13 @@
     },
     handlePrevious(){
       this.daySlide = this.weekday[this.daySlide - 1];
+      this.marginLeft+=210;
     },
     handleNext(){
       this.daySlide = this.weekday[this.daySlide + 1];
+      this.marginLeft+=210;
+      // this.a+=250;
+      // console.log(this.a);
     },
     handleAlign(mode){
       if(mode === 'block'){
@@ -281,6 +290,7 @@
     handleUndo(id, day){
       this.tasks[id].weektasks[day].status = 'pending';
     },
+   
 
   },
 };
