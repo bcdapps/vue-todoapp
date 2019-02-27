@@ -5,13 +5,7 @@
     <add-task v-bind:class="{'modal-anime':modalAnime}" @handleAddTask="handleAddTask"/>
     </div>
     </section>
-    <div v-if="shownoti" class="notification">
-      <div>
-        <h1 class="notification-h1">Notification</h1>
-        <p>{{notification_msg}}</p>
-      </div>
-      <div><img class="notification-cancel-icon" src="../../assets/images/cancel.png"/></div>
-    </div>
+    <notification v-if="shownoti" :notification_msg="notification_msg" />
     <section class="main-container">
       <div class="left-container">
         <header>
@@ -58,8 +52,8 @@
             <div>Sun</div>
             </div>
           </div>
-          <div class="calender-row2" v-for="task in tasks">
-            <div class="spot-container"><span class="spot" v-bind:style="{background: task.color}"><img class="task-cancel" src="../../assets/images/cancel.png" /></span>
+          <div class="calender-row2" v-for="(task, index) in tasks">
+            <div class="spot-container"><span class="spot" v-bind:style="{background: task.color}"><img @click="handleDeletTask(index)" class="task-cancel" src="../../assets/images/cancel.png" /></span>
               <p>{{task.title}}</p>
             </div>
             <div v-if="alignMode === 'left'" class="chart-row">
@@ -68,8 +62,8 @@
               </div>
             </div>
             <div v-else class="squares-row">
-              <div v-for="weektask in task.weektasks">
-                <div v-if="weektask.task" class="square" v-bind:style="{background: weektask.status === 'complete'? task.color: pendingColor}"></div>
+              <div v-for="(weektask, weekIndex) in task.weektasks">
+                <div v-if="weektask.task" @click="handleblockTask(index, weekIndex)" class="square" v-bind:style="{background: weektask.status === 'complete'? task.color: pendingColor}"></div>
               </div>
             </div>
           </div>
@@ -116,6 +110,7 @@
 <script>
   import AddTask from './AddTask';
   import {tasks, goals} from '../TaskDB/db';
+  import Notification from "./notification";
   export default {
   name: 'TodoApp',
   data() {
@@ -138,14 +133,13 @@
     };
   },
   components:{
-    'add-task': AddTask
+    'add-task': AddTask,
+    'notification': Notification
   },
   created() {
     this.getMonth();
-    var d = new Date();
-    var n = d.getDay();
     this.weekday = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
-    this.daySlide = n-1;
+    this.daySlide = new Date().getDay();
   },
   mounted() {
     const targets = this.$el;
@@ -162,7 +156,22 @@
         translateX: 0,
         easing: 'easeOutExpo',
       });
-      /* ... etc ... */
+  },
+  watch:{
+    daySlide(){
+      var today = new Date().getDay();
+      var yesterday = new Date().getDay() - 1;
+      var tomorrow = new Date().getDay() + 1;
+      if(today === this.daySlide){
+        this.dayName ='Today';
+      }
+      if(yesterday === this.daySlide){
+        this.dayName ='Yesterday';
+      }
+      if(tomorrow === this.daySlide){
+        this.dayName ='Tomorrow';
+      }
+    }
   },
   methods: {
     handleyearTab(index, tabName){
@@ -210,7 +219,7 @@
     getDay(num) {
       let d = new Date();
       var day = d.getDay(),
-        diff = d.getDate() - day + (day == 0 ? -6 : num+1);
+        diff = d.getDate() - day + (day == 0 ? -6 : num);
       let date = new Date(d.setDate(diff));
       return date.toDateString().substring(0, date.toDateString().length-4);
     },
@@ -226,11 +235,38 @@
     },
     handleComplete(id, day) {
       this.tasks[id].weektasks[day].status = 'complete';
+      this.shownoti = true;
+      this.notification_msg = "Task Completed!";
+      setTimeout(()=>{
+        this.shownoti = false;
+      }, 3000)
     },
-    handleUndo(id, day){
+    handleUndo(id, day) {
       this.tasks[id].weektasks[day].status = 'pending';
+      this.shownoti = true;
+      this.notification_msg = "Task Undo!";
+      setTimeout(()=>{
+        this.shownoti = false;
+      }, 3000)
     },
-
+    handleClosenoti() {
+      console.log("close");
+      this.shownoti = false;
+    },
+    handleDeletTask(index){
+      this.tasks.splice(index, 1);
+      this.notification_msg = "Task Deleted!";
+      setTimeout(()=>{
+        this.shownoti = false;
+      }, 3000)
+    },
+    handleblockTask(index, weekIndex){
+      if(this.tasks[index].weektasks[weekIndex].status == 'pending'){
+        this.tasks[index].weektasks[weekIndex].status = 'complete'
+      } else {
+        this.tasks[index].weektasks[weekIndex].status = 'pending'
+      }
+    }
   },
 };
 </script>

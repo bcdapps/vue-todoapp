@@ -1,12 +1,6 @@
 <template>
   <div>
-    <div v-if="shownoti" class="notification">
-      <div>
-        <h1 class="notification-h1">Notification</h1>
-        <p>{{notification_msg}}</p>
-      </div>
-      <div><img class="notification-cancel-icon" src="../../assets/images/cancel.png"/></div>
-    </div>
+    <notification v-if="shownoti" :notification_msg="notification_msg" />
     <div class="right">
       <div @click="handleAddTask" class="close-container center gray" id="close">
         <img src="../../assets/images/cancel.png" />
@@ -55,7 +49,9 @@
 
 <script>
   import {tasks, colors} from '../TaskDB/db';
+  import Notification from "./notification";
   export default {
+    components: {'notification': Notification},
     name: 'AddTask',
     data() {
       return {
